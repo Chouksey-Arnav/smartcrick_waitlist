@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0c0f">
+<meta name="description" content="SmartCrick AI — The world's first complete AI cricket training platform. Join 3,200+ cricketers on the early access waitlist.">
+<meta property="og:title" content="SmartCrick AI — Join the Early Access Waitlist">
+<meta property="og:description" content="AI drills, mental coaching, Cricket DNA matching, ProVision™ video analysis. Join the waitlist — free.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SmartCrick AI — Join the Waitlist 🏏">
+<meta name="twitter:description" content="The world's first AI cricket training platform. Get early access before everyone else.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏏</text></svg>">
+<title>SmartCrick AI — Early Access Waitlist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<style>
+/* ── Reset ───────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0c0f; --bg2:#111318; --bg3:#161b22; --bg4:#1c2128; --bg5:#222932;
+  --border:rgba(55,62,72,0.9); --border-em:rgba(85,95,110,1);
+  --green:#16a34a; --green-dim:rgba(22,163,74,0.12); --green-glow:rgba(22,163,74,0.28);
+  --green-light:#4ade80; --green-mid:#22c55e;
+  --teal:#0d9488; --gold:#f59e0b; --gold-dim:rgba(245,158,11,0.12);
+  --purple:#8b5cf6; --blue:#3b82f6; --red:#ef4444;
+  --text1:#f0fdf4; --text2:#c9d1d9; --text3:#8b949e; --text4:#484f58;
+  --r:12px; --rl:16px; --rxl:20px;
+  --sans:'Plus Jakarta Sans',system-ui,sans-serif;
+  --display:'Rajdhani',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text1);font-family:var(--sans);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+img,video{max-width:100%}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+a{color:inherit;text-decoration:none}
+button{font-family:var(--sans);cursor:pointer;border:none;background:none}
+input,select{font-family:var(--sans)}
+
+/* ── Ticker bar ───────────────────────────────────────────── */
+.ticker-bar{
+  background:linear-gradient(90deg,rgba(22,163,74,0.15),rgba(13,148,136,0.12),rgba(22,163,74,0.15));
+  border-bottom:1px solid rgba(22,163,74,0.2);
+  overflow:hidden;height:36px;display:flex;align-items:center;
+}
+.ticker-inner{
+  display:flex;gap:64px;white-space:nowrap;
+  animation:ticker 30s linear infinite;
+  padding-left:100%;
+}
+.ticker-item{
+  font-size:12px;font-weight:600;color:var(--green-light);
+  display:flex;align-items:center;gap:8px;
+}
+.ticker-dot{width:5px;height:5px;border-radius:50%;background:var(--green-light)}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── Referred banner ──────────────────────────────────────── */
+.ref-banner{
+  text-align:center;padding:10px 24px;
+  background:rgba(22,163,74,0.08);
+  border-bottom:1px solid rgba(22,163,74,0.2);
+  font-size:13px;color:var(--green-light);font-weight:600;
+  display:none;
+}
+
+/* ── Grid background ──────────────────────────────────────── */
+.grid-bg{
+  background-image:
+    linear-gradient(rgba(22,163,74,0.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(22,163,74,0.025) 1px,transparent 1px);
+  background-size:48px 48px;
+}
+
+/* ── Nav ──────────────────────────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:60;
+  height:60px;padding:0 clamp(16px,4vw,32px);
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(10,12,15,0.88);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:border-color .2s;
+}
+nav.scrolled{border-color:var(--border-em)}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo-icon{
+  width:32px;height:32px;border-radius:9px;font-size:17px;
+  background:linear-gradient(135deg,var(--green),var(--teal));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 0 1px rgba(22,163,74,0.3);
+}
+.nav-wordmark{
+  font-family:var(--display);font-size:20px;font-weight:700;
+  color:var(--text1);letter-spacing:.02em;
+}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-pill{
+  font-size:11px;font-weight:700;letter-spacing:.06em;
+  padding:5px 12px;border-radius:20px;
+  background:var(--green-dim);border:1px solid rgba(22,163,74,0.3);
+  color:var(--green-light);
+}
+.nav-leaderboard{
+  font-size:13px;font-weight:600;color:var(--text3);
+  padding:6px 14px;border-radius:var(--r);border:1px solid var(--border);
+  transition:all .15s;
+}
+.nav-leaderboard:hover{color:var(--text1);border-color:var(--border-em)}
+
+/* ── Hero ─────────────────────────────────────────────────── */
+.hero{
+  min-height:100svh;
+  padding:clamp(100px,14vw,130px) clamp(16px,5vw,40px) 80px;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.hero-glow{
+  position:absolute;border-radius:50%;pointer-events:none;filter:blur(100px);
+}
+.glow1{width:700px;height:700px;top:-200px;left:-150px;background:radial-gradient(circle,rgba(22,163,74,0.07) 0%,transparent 70%)}
+.glow2{width:600px;height:600px;bottom:-100px;right:-100px;background:radial-gradient(circle,rgba(13,148,136,0.06) 0%,transparent 70%)}
+.glow3{width:400px;height:400px;top:30%;left:50%;transform:translateX(-50%);background:radial-gradient(circle,rgba(22,163,74,0.04) 0%,transparent 70%)}
+
+/* Decorative cricket ball */
+.deco-ball{position:absolute;pointer-events:none;opacity:.055}
+.deco-ball svg{animation:spin-slow 25s linear infinite}
+.deco-ball-sm{position:absolute;pointer-events:none;opacity:.035}
+.deco-ball-sm svg{animation:spin-slow 18s linear infinite reverse}
+@keyframes spin-slow{to{transform:rotate(360deg)}}
+
+.hero-inner{max-width:660px;width:100%;position:relative;z-index:1;text-align:center}
+
+.hero-label{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--green-light);background:var(--green-dim);
+  border:1px solid rgba(22,163,74,0.3);
+  padding:6px 16px;border-radius:20px;margin-bottom:24px;
+  animation:fadeslide .5s ease both;
+}
+.label-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--green-light);
+  animation:breathe 2s ease-in-out infinite;
+}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.75)}}
+
+.hero-h1{
+  font-family:var(--display);
+  font-size:clamp(44px,8vw,80px);
+  font-weight:700;line-height:1.0;letter-spacing:-.015em;
+  color:var(--text1);margin-bottom:20px;
+  animation:fadeslide .5s .1s ease both;
+}
+.hero-h1 em{font-style:normal;color:var(--green-light)}
+.hero-sub{
+  font-size:clamp(15px,2.2vw,18px);color:var(--text3);
+  max-width:500px;margin:0 auto 28px;line-height:1.7;font-weight:400;
+  animation:fadeslide .5s .2s ease both;
+}
+
+/* Live counter row */
+.counter-row{
+  display:flex;align-items:center;justify-content:center;
+  gap:10px;margin-bottom:10px;
+  animation:fadeslide .5s .25s ease both;
+}
+.live-indicator{
+  display:flex;align-items:center;gap:5px;
+  background:rgba(22,163,74,0.1);border:1px solid rgba(22,163,74,0.25);
+  border-radius:20px;padding:4px 10px;
+}
+.live-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--green);
+  animation:breathe 1.5s ease-in-out infinite;
+}
+.live-text{font-size:11px;font-weight:700;color:var(--green-light);letter-spacing:.06em}
+.counter-main{
+  font-size:14px;color:var(--text3);
+}
+.counter-num{
+  font-family:var(--display);font-size:17px;font-weight:700;
+  color:var(--green-light);
+}
+.last-hour{
+  font-size:12px;color:var(--text4);margin-bottom:32px;
+  animation:fadeslide .5s .28s ease both;
+}
+.last-hour span{color:var(--green-mid);font-weight:600}
+
+@keyframes fadeslide{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Form card ────────────────────────────────────────────── */
+.form-card{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--rxl);padding:clamp(20px,4vw,32px);
+  text-align:left;animation:fadeslide .5s .3s ease both;
+  position:relative;overflow:hidden;
+}
+.form-card-bar{
+  position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--green),var(--teal) 50%,var(--green));
+  background-size:200% 100%;
+  animation:barflow 4s linear infinite;
+}
+@keyframes barflow{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+.form-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.form-2col{grid-template-columns:1fr}}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg:not(:last-child){margin-bottom:12px}
+.flabel{
+  font-size:11px;font-weight:700;color:var(--text4);
+  letter-spacing:.08em;text-transform:uppercase;
+}
+.finput,.fselect{
+  width:100%;padding:12px 14px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--r);color:var(--text1);
+  font-size:15px;transition:border-color .15s,box-shadow .15s;
+  -webkit-appearance:none;appearance:none;
+}
+.finput::placeholder{color:var(--text4)}
+.finput:focus,.fselect:focus{
+  outline:none;border-color:var(--green);
+  box-shadow:0 0 0 3px var(--green-glow);
+}
+.finput.err{border-color:var(--red);box-shadow:0 0 0 3px rgba(239,68,68,.2)}
+.fselect{
+  cursor:pointer;padding-right:36px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%238b949e' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 13px center;
+}
+.fselect option{background:var(--bg2)}
+.ferr-msg{font-size:11px;color:var(--red);margin-top:3px;display:none}
+.ferr-msg.show{display:block}
+
+.submit-btn{
+  width:100%;margin-top:8px;
+  padding:15px;background:var(--green);
+  color:#fff;border-radius:var(--r);
+  font-family:var(--display);font-size:18px;font-weight:700;
+  letter-spacing:.04em;
+  position:relative;overflow:hidden;
+  transition:background .15s,transform .1s,box-shadow .15s;
+  box-shadow:0 4px 14px rgba(22,163,74,.25);
+}
+.submit-btn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.09) 0%,transparent 60%);
+  pointer-events:none;
+}
+.submit-btn:hover:not(:disabled){background:#15803d;box-shadow:0 6px 20px rgba(22,163,74,.35)}
+.submit-btn:active:not(:disabled){transform:scale(.99)}
+.submit-btn:disabled{opacity:.6;cursor:not-allowed}
+.btn-spinner{
+  display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);
+  border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;
+  margin:0 auto;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.submit-btn.loading .btn-text{display:none}
+.submit-btn.loading .btn-spinner{display:block}
+
+.form-foot{
+  text-align:center;margin-top:10px;
+  font-size:12px;color:var(--text4);
+}
+.form-foot a{color:var(--text3);border-bottom:1px solid transparent;transition:border-color .15s}
+.form-foot a:hover{border-color:var(--text3)}
+
+/* ── Confirmation card ────────────────────────────────────── */
+.confirm-card{
+  background:var(--bg3);border:1px solid rgba(22,163,74,.3);
+  border-radius:var(--rxl);padding:clamp(24px,4vw,36px);
+  text-align:center;position:relative;overflow:hidden;
+  animation:fadeslide .45s ease both;
+}
+.confirm-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--green),var(--green-light),var(--teal));
+}
+.confirm-checkmark{
+  width:56px;height:56px;border-radius:50%;
+  background:rgba(22,163,74,.15);border:2px solid rgba(22,163,74,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;margin:0 auto 16px;
+  animation:popIn .5s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes popIn{from{transform:scale(.3);opacity:0}60%{transform:scale(1.1)}80%{transform:scale(.96)}to{transform:scale(1);opacity:1}}
+.confirm-tag{
+  font-size:11px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--text4);margin-bottom:4px;
+}
+.confirm-position{
+  font-family:var(--display);font-size:72px;font-weight:700;
+  color:var(--green-light);line-height:1;letter-spacing:-.02em;
+  margin-bottom:4px;
+}
+.confirm-title{font-size:22px;font-weight:700;color:var(--text1);margin-bottom:8px}
+.confirm-sub{font-size:14px;color:var(--text3);line-height:1.65;max-width:340px;margin:0 auto 20px}
+
+/* Progress bar toward priority access */
+.progress-section{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);
+  padding:16px;margin-bottom:20px;text-align:left;
+}
+.progress-header{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;
+}
+.progress-label{font-size:12px;font-weight:600;color:var(--text3)}
+.progress-target{
+  font-size:11px;font-weight:700;color:var(--gold);
+  background:var(--gold-dim);border:1px solid rgba(245,158,11,.25);
+  padding:2px 8px;border-radius:10px;
+}
+.progress-bar-track{
+  height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-bottom:6px;
+}
+.progress-bar-fill{
+  height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--green),var(--green-light));
+  transition:width 1.2s cubic-bezier(.16,1,.3,1);
+}
+.progress-sub-text{font-size:11px;color:var(--text4)}
+
+/* Referral box */
+.ref-box{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px;margin-bottom:16px;
+}
+.ref-box-label{
+  font-size:11px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--text4);margin-bottom:8px;
+}
+.ref-link-row{display:flex;gap:8px;align-items:center}
+.ref-url{
+  flex:1;padding:10px 12px;
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--r);
+  font-size:12px;color:var(--text3);font-family:monospace;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;user-select:all;
+}
+.btn-copy{
+  padding:10px 16px;
+  background:var(--green-dim);border:1px solid rgba(22,163,74,.3);
+  border-radius:var(--r);color:var(--green-light);
+  font-size:13px;font-weight:600;white-space:nowrap;
+  transition:background .15s;flex-shrink:0;
+}
+.btn-copy:hover{background:rgba(22,163,74,.22)}
+.btn-copy.copied{background:rgba(22,163,74,.25);color:#fff}
+.ref-cta-text{
+  font-size:13px;color:var(--text3);margin-top:10px;line-height:1.55;
+}
+.ref-cta-text strong{color:var(--green-light)}
+
+/* Share row */
+.share-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.btn-share{
+  display:flex;align-items:center;gap:6px;
+  padding:10px 16px;border-radius:var(--r);
+  border:1px solid var(--border);background:var(--bg2);
+  font-size:13px;font-weight:600;color:var(--text2);
+  transition:all .15s;
+}
+.btn-share:hover{border-color:var(--border-em);color:var(--text1);background:var(--bg4)}
+.share-wa{border-color:rgba(37,211,102,.3);color:#25d366}
+.share-wa:hover{background:rgba(37,211,102,.08)}
+.share-x{border-color:rgba(200,200,200,.2)}
+.share-x:hover{background:rgba(255,255,255,.05)}
+
+/* Milestone pills */
+.milestone-strip{
+  display:flex;gap:8px;justify-content:center;flex-wrap:wrap;
+  padding-top:16px;border-top:1px solid var(--border);
+}
+.milestone-pill{
+  font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;
+  background:var(--gold-dim);border:1px solid rgba(245,158,11,.25);color:var(--gold);
+}
+
+/* ── Activity toast ───────────────────────────────────────── */
+.activity-toast{
+  position:fixed;bottom:24px;left:24px;z-index:100;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--r);padding:12px 14px;
+  display:flex;align-items:center;gap:10px;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
+  max-width:280px;
+  transform:translateX(-120%);
+  transition:transform .4s cubic-bezier(.16,1,.3,1);
+  pointer-events:none;
+}
+.activity-toast.show{transform:translateX(0)}
+.toast-icon{font-size:18px;flex-shrink:0}
+.toast-text{font-size:13px;color:var(--text2);line-height:1.4}
+.toast-text strong{color:var(--text1)}
+.toast-time{font-size:11px;color:var(--text4)}
+
+/* ── Proof strip ──────────────────────────────────────────── */
+.proof-strip{
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:32px clamp(16px,4vw,40px);
+  background:var(--bg2);
+  display:flex;align-items:center;justify-content:center;
+  gap:clamp(24px,5vw,56px);flex-wrap:wrap;
+}
+.proof-item{text-align:center}
+.proof-num{
+  font-family:var(--display);font-size:clamp(26px,4vw,36px);
+  font-weight:700;color:var(--text1);letter-spacing:-.01em;line-height:1.1;
+}
+.proof-label{font-size:12px;color:var(--text4);margin-top:2px;font-weight:500}
+.proof-divider{width:1px;height:40px;background:var(--border)}
+@media(max-width:480px){.proof-divider{display:none}}
+
+/* ── Sections ─────────────────────────────────────────────── */
+.section{padding:clamp(56px,8vw,88px) clamp(16px,4vw,40px)}
+.section-inner{max-width:1100px;margin:0 auto}
+.section-eyebrow{
+  font-size:11px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--green-light);margin-bottom:10px;
+}
+.section-title{
+  font-family:var(--display);
+  font-size:clamp(30px,5vw,52px);font-weight:700;line-height:1.1;
+  color:var(--text1);letter-spacing:-.01em;margin-bottom:14px;
+}
+.section-body{
+  font-size:16px;color:var(--text3);max-width:520px;
+  line-height:1.7;margin-bottom:clamp(32px,5vw,56px);
+}
+
+/* ── Features grid ────────────────────────────────────────── */
+.features-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:14px;
+}
+.feat-card{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--rl);padding:26px;
+  position:relative;overflow:hidden;
+  transition:border-color .2s,transform .2s,box-shadow .2s;
+}
+.feat-card::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(140deg,transparent 60%,rgba(22,163,74,.03));
+  pointer-events:none;
+}
+.feat-card:hover{
+  border-color:rgba(22,163,74,.35);
+  transform:translateY(-4px);
+  box-shadow:0 12px 36px rgba(0,0,0,.3);
+}
+.feat-card-accent{
+  position:absolute;top:0;left:0;bottom:0;width:3px;border-radius:3px 0 0 3px;
+}
+.feat-icon{
+  width:44px;height:44px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;margin-bottom:14px;
+  background:var(--bg4);border:1px solid var(--border);
+}
+.feat-title{font-size:16px;font-weight:700;color:var(--text1);margin-bottom:6px}
+.feat-desc{font-size:14px;color:var(--text3);line-height:1.62;margin-bottom:12px}
+.feat-badge{
+  display:inline-flex;align-items:center;
+  font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:3px 9px;border-radius:20px;border:1px solid;
+}
+.badge-g{background:var(--green-dim);border-color:rgba(22,163,74,.35);color:var(--green-light)}
+.badge-p{background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.3);color:#a78bfa}
+.badge-b{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.3);color:#60a5fa}
+.badge-t{background:rgba(20,184,166,.1);border-color:rgba(20,184,166,.3);color:#2dd4bf}
+.badge-o{background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.3);color:#fb923c}
+.badge-y{background:var(--gold-dim);border-color:rgba(245,158,11,.3);color:var(--gold)}
+.badge-r{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:#f87171}
+
+/* ── Steps ────────────────────────────────────────────────── */
+.steps-section{
+  background:var(--bg2);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+}
+.steps-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;
+}
+.step{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--rl);padding:28px;position:relative;overflow:hidden;
+}
+.step-bg-num{
+  position:absolute;top:-12px;right:14px;
+  font-family:var(--display);font-size:88px;font-weight:700;
+  color:rgba(22,163,74,.05);line-height:1;pointer-events:none;
+  user-select:none;
+}
+.step-icon-wrap{
+  width:42px;height:42px;border-radius:10px;margin-bottom:14px;
+  background:var(--green-dim);border:1px solid rgba(22,163,74,.3);
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+}
+.step-num-badge{
+  font-size:10px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--green-light);
+  margin-bottom:6px;display:block;
+}
+.step-title{font-size:17px;font-weight:700;color:var(--text1);margin-bottom:6px}
+.step-desc{font-size:14px;color:var(--text3);line-height:1.65}
+
+/* ── Testimonials ─────────────────────────────────────────── */
+.testimonials-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;
+}
+.testi{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--rl);padding:24px;
+  transition:border-color .2s;
+}
+.testi:hover{border-color:var(--border-em)}
+.testi-stars{color:var(--gold);font-size:13px;letter-spacing:2px;margin-bottom:12px}
+.testi-text{
+  font-size:15px;color:var(--text2);line-height:1.7;
+  margin-bottom:16px;font-style:italic;
+}
+.testi-author{display:flex;align-items:center;gap:10px}
+.testi-avatar{
+  width:38px;height:38px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--green),var(--teal));
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:#fff;
+}
+.testi-name{font-size:13px;font-weight:700;color:var(--text1)}
+.testi-role{font-size:11px;color:var(--text4)}
+
+/* ── FAQ ──────────────────────────────────────────────────── */
+.faq-wrap{max-width:700px}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-q{
+  width:100%;padding:20px 0;background:none;
+  display:flex;justify-content:space-between;align-items:center;gap:16px;
+  font-size:16px;font-weight:600;color:var(--text1);
+  text-align:left;transition:color .15s;
+}
+.faq-q:hover{color:var(--green-light)}
+.faq-chevron{
+  flex-shrink:0;width:22px;height:22px;border-radius:50%;
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:var(--text3);
+  transition:transform .25s,border-color .15s,background .15s;
+}
+.faq-item.open .faq-chevron{
+  transform:rotate(45deg);
+  border-color:var(--green);background:var(--green-dim);color:var(--green-light);
+}
+.faq-a{
+  font-size:14px;color:var(--text3);line-height:1.75;
+  max-height:0;overflow:hidden;
+  transition:max-height .32s ease,padding-bottom .32s;
+}
+.faq-item.open .faq-a{max-height:200px;padding-bottom:20px}
+
+/* ── Final CTA ────────────────────────────────────────────── */
+.final-cta{
+  padding:clamp(60px,8vw,88px) clamp(16px,4vw,40px);
+  text-align:center;
+  background:var(--bg2);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.final-cta-glow{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:600px;height:600px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(22,163,74,.06) 0%,transparent 70%);
+}
+.final-inner{position:relative;z-index:1;max-width:580px;margin:0 auto}
+.btn-final{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:16px 40px;background:var(--green);color:#fff;
+  border-radius:var(--r);
+  font-family:var(--display);font-size:19px;font-weight:700;letter-spacing:.04em;
+  transition:background .15s,transform .1s,box-shadow .15s;
+  margin-top:28px;
+  box-shadow:0 0 0 1px rgba(22,163,74,.4),0 8px 28px rgba(22,163,74,.22);
+}
+.btn-final:hover{background:#15803d;transform:translateY(-2px);box-shadow:0 0 0 1px rgba(22,163,74,.5),0 12px 36px rgba(22,163,74,.3)}
+.btn-final:active{transform:translateY(0)}
+
+/* ── Footer ───────────────────────────────────────────────── */
+footer{
+  padding:32px clamp(16px,4vw,40px);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;
+  border-top:1px solid var(--border);
+}
+.footer-brand{display:flex;align-items:center;gap:9px}
+.footer-icon{
+  width:26px;height:26px;border-radius:6px;font-size:13px;
+  background:linear-gradient(135deg,var(--green),var(--teal));
+  display:flex;align-items:center;justify-content:center;
+}
+.footer-name{font-family:var(--display);font-size:15px;font-weight:600;color:var(--text3)}
+.footer-links{display:flex;gap:20px;flex-wrap:wrap}
+.footer-links a{font-size:13px;color:var(--text4);transition:color .15s}
+.footer-links a:hover{color:var(--text2)}
+.footer-copy{font-size:12px;color:var(--text4)}
+
+/* ── Scroll animations ────────────────────────────────────── */
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+.stagger-1{transition-delay:.05s}
+.stagger-2{transition-delay:.12s}
+.stagger-3{transition-delay:.19s}
+.stagger-4{transition-delay:.26s}
+.stagger-5{transition-delay:.33s}
+.stagger-6{transition-delay:.40s}
+.stagger-7{transition-delay:.47s}
+.stagger-8{transition-delay:.54s}
+.stagger-9{transition-delay:.61s}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media(max-width:640px){
+  .ticker-bar{display:none}
+  .nav-leaderboard{display:none}
+  .activity-toast{bottom:16px;left:16px;max-width:calc(100vw - 32px)}
+  .confirm-position{font-size:60px}
+  .share-row{flex-direction:column;align-items:stretch}
+  .btn-share{justify-content:center}
+  .proof-strip{gap:20px}
+  .footer-copy{display:none}
+}
+@media(max-width:400px){
+  .hero-h1{font-size:38px}
+  .feat-card,.step,.testi{padding:20px 16px}
+}
+</style>
+</head>
+<body class="grid-bg">
+
+<!-- Ticker bar -->
+<div class="ticker-bar" aria-hidden="true">
+  <div class="ticker-inner" id="ticker">
+    <span class="ticker-item"><span class="ticker-dot"></span>35+ AI Cricket Drills</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Cricket DNA Matching</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>ProVision™ Video Analysis</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>70+ Mental Sessions</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>30-Day Challenge</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Daily Net Quiz</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Live Player Rating</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Free Early Access</span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item"><span class="ticker-dot"></span>35+ AI Cricket Drills</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Cricket DNA Matching</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>ProVision™ Video Analysis</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>70+ Mental Sessions</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>30-Day Challenge</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Daily Net Quiz</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Live Player Rating</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Free Early Access</span>
+  </div>
+</div>
+
+<!-- Referred banner -->
+<div class="ref-banner" id="ref-banner">
+  🎉 You've been invited! Join SmartCrick AI early access.
+</div>
+
+<!-- Nav -->
+<nav id="main-nav">
+  <a href="/" class="nav-logo" aria-label="SmartCrick AI">
+    <div class="nav-logo-icon">🏏</div>
+    <span class="nav-wordmark">SmartCrick</span>
+  </a>
+  <div class="nav-right">
+    <a href="/leaderboard.html" class="nav-leaderboard">🏆 Leaderboard</a>
+    <span class="nav-pill">Early Access</span>
+  </div>
+</nav>
+
+<!-- ── HERO ────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-glow glow1"></div>
+  <div class="hero-glow glow2"></div>
+  <div class="hero-glow glow3"></div>
+
+  <div class="deco-ball" style="top:14%;right:6%;width:200px;height:200px" aria-hidden="true">
+    <svg viewBox="0 0 100 100" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="47" fill="none" stroke="#16a34a" stroke-width="1.5"/>
+      <path d="M50 3C50 3 18 18 18 50C18 82 50 97 50 97" fill="none" stroke="#16a34a" stroke-width="1.2"/>
+      <path d="M50 3C50 3 82 18 82 50C82 82 50 97 50 97" fill="none" stroke="#16a34a" stroke-width="1.2"/>
+      <path d="M3 50C3 50 18 34 50 34C82 34 97 50 97 50" fill="none" stroke="#16a34a" stroke-width=".9"/>
+      <path d="M3 50C3 50 18 66 50 66C82 66 97 50 97 50" fill="none" stroke="#16a34a" stroke-width=".9"/>
+    </svg>
+  </div>
+  <div class="deco-ball-sm" style="bottom:12%;left:5%;width:120px;height:120px" aria-hidden="true">
+    <svg viewBox="0 0 100 100" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="47" fill="none" stroke="#0d9488" stroke-width="1.5"/>
+      <path d="M50 3C50 3 18 18 18 50C18 82 50 97 50 97" fill="none" stroke="#0d9488" stroke-width="1.2"/>
+      <path d="M50 3C50 3 82 18 82 50C82 82 50 97 50 97" fill="none" stroke="#0d9488" stroke-width="1.2"/>
+    </svg>
+  </div>
+
+  <div class="hero-inner">
+    <div class="hero-label">
+      <span class="label-dot"></span>
+      Limited Early Access — Join the Waitlist
+    </div>
+
+    <h1 class="hero-h1">Train Like a Pro.<br><em>Get Access First.</em></h1>
+
+    <p class="hero-sub">SmartCrick AI is the world's first complete cricket training platform — AI drills, mental coaching, Cricket DNA matching, and biomechanical video analysis. Built for cricketers who are serious.</p>
+
+    <div class="counter-row">
+      <div class="live-indicator">
+        <div class="live-dot"></div>
+        <span class="live-text">LIVE</span>
+      </div>
+      <p class="counter-main">
+        <span class="counter-num" id="live-count">3,247</span> cricketers on the waitlist
+      </p>
+    </div>
+    <p class="last-hour"><span id="last-hour-count">47</span> joined in the last hour</p>
+
+    <!-- Form state -->
+    <div id="form-state">
+      <div class="form-card">
+        <div class="form-card-bar"></div>
+        <div class="form-2col">
+          <div class="fg">
+            <label class="flabel" for="f-name">First Name</label>
+            <input class="finput" type="text" id="f-name" placeholder="Virat" autocomplete="given-name">
+            <span class="ferr-msg" id="err-name">Please enter your name</span>
+          </div>
+          <div class="fg">
+            <label class="flabel" for="f-email">Email Address</label>
+            <input class="finput" type="email" id="f-email" placeholder="you@email.com" autocomplete="email">
+            <span class="ferr-msg" id="err-email">Enter a valid email</span>
+          </div>
+        </div>
+        <div class="form-2col">
+          <div class="fg" style="margin-bottom:0">
+            <label class="flabel" for="f-role">Playing Role</label>
+            <select class="fselect" id="f-role">
+              <option value="">Select role…</option>
+              <option value="batsman">🏏 Batsman</option>
+              <option value="bowler">🎳 Bowler</option>
+              <option value="allrounder">⭐ All-Rounder</option>
+              <option value="wicketkeeper">🧤 Wicket-Keeper</option>
+            </select>
+          </div>
+          <div class="fg" style="margin-bottom:0">
+            <label class="flabel" for="f-level">Playing Level</label>
+            <select class="fselect" id="f-level">
+              <option value="">Select level…</option>
+              <option value="beginner">🌱 Beginner</option>
+              <option value="club">🏏 Club Cricket</option>
+              <option value="district">📍 District Level</option>
+              <option value="state">🏆 State / County</option>
+              <option value="national">🌍 National / Pro</option>
+            </select>
+          </div>
+        </div>
+        <button class="submit-btn" id="submit-btn" onclick="handleSubmit()">
+          <span class="btn-text">Join the Waitlist — Free</span>
+          <div class="btn-spinner"></div>
+        </button>
+        <p class="form-foot">
+          No spam. No credit card. By joining you agree to our
+          <a href="#">Terms</a> & <a href="#">Privacy Policy</a>.
+        </p>
+      </div>
+    </div>
+
+    <!-- Confirmation state -->
+    <div id="confirm-state" style="display:none">
+      <div class="confirm-card">
+        <div class="confirm-checkmark">🎉</div>
+        <p class="confirm-tag">Your waitlist position</p>
+        <div class="confirm-position" id="c-position">#3,248</div>
+        <h2 class="confirm-title">You're officially on the list!</h2>
+        <p class="confirm-sub">We'll email you when your spot opens. Refer friends below to move up the queue and unlock early access perks.</p>
+
+        <!-- Progress to priority access -->
+        <div class="progress-section">
+          <div class="progress-header">
+            <span class="progress-label">🎯 Progress to Priority Access (Top 100)</span>
+            <span class="progress-target">3 Months Free</span>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+          </div>
+          <p class="progress-sub-text" id="progress-sub">Refer 5 friends to jump to priority access territory</p>
+        </div>
+
+        <!-- Referral box -->
+        <div class="ref-box">
+          <div class="ref-box-label">Your unique referral link</div>
+          <div class="ref-link-row">
+            <div class="ref-url" id="ref-url-display" title="Click to select"></div>
+            <button class="btn-copy" id="copy-btn" onclick="copyRef()">Copy</button>
+          </div>
+          <p class="ref-cta-text">Each friend who joins = you move up <strong>5 spots</strong>. Refer 5 friends → Priority Access + 3 months free.</p>
+        </div>
+
+        <!-- Share row -->
+        <div class="share-row">
+          <button class="btn-share share-wa" onclick="shareWhatsApp()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.555 4.118 1.528 5.845L.057 23.857a.5.5 0 0 0 .585.643l6.265-1.643A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.374l-.358-.213-3.72.976.993-3.624-.234-.372A9.817 9.817 0 0 1 2.182 12C2.182 6.575 6.575 2.182 12 2.182S21.818 6.575 21.818 12 17.425 21.818 12 21.818z"/></svg>
+            WhatsApp
+          </button>
+          <button class="btn-share share-x" onclick="shareTwitter()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.73-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            Post on X
+          </button>
+          <button class="btn-share" onclick="copyRef()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy Link
+          </button>
+        </div>
+
+        <!-- Milestone pills -->
+        <div class="milestone-strip">
+          <span class="milestone-pill">🎯 Refer 1 → +5 spots</span>
+          <span class="milestone-pill">⭐ Refer 5 → Priority Access</span>
+          <span class="milestone-pill">🏆 Top 100 → 3 Months Free</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Activity toast -->
+<div class="activity-toast" id="activity-toast" role="status" aria-live="polite">
+  <div class="toast-icon" id="toast-icon">🏏</div>
+  <div>
+    <div class="toast-text" id="toast-text"><strong>Arjun</strong> from Mumbai just joined</div>
+    <div class="toast-time" id="toast-time">Just now</div>
+  </div>
+</div>
+
+<!-- Social proof strip -->
+<div class="proof-strip fade-up">
+  <div class="proof-item">
+    <div class="proof-num" id="proof-count">3,247</div>
+    <div class="proof-label">On the waitlist</div>
+  </div>
+  <div class="proof-divider" aria-hidden="true"></div>
+  <div class="proof-item">
+    <div class="proof-num">35+</div>
+    <div class="proof-label">AI cricket drills</div>
+  </div>
+  <div class="proof-divider" aria-hidden="true"></div>
+  <div class="proof-item">
+    <div class="proof-num">70+</div>
+    <div class="proof-label">Mental sessions</div>
+  </div>
+  <div class="proof-divider" aria-hidden="true"></div>
+  <div class="proof-item">
+    <div class="proof-num">106</div>
+    <div class="proof-label">Cricket DNA profiles</div>
+  </div>
+  <div class="proof-divider" aria-hidden="true"></div>
+  <div class="proof-item">
+    <div class="proof-num">Free</div>
+    <div class="proof-label">To join the waitlist</div>
+  </div>
+</div>
+
+<!-- ── FEATURES ─────────────────────────────────────────────── -->
+<div class="section fade-up">
+  <div class="section-inner">
+    <p class="section-eyebrow">What you're getting</p>
+    <h2 class="section-title">Everything a cricketer<br>needs. One platform.</h2>
+    <p class="section-body">Built by cricketers, powered by AI. Every feature obsessively designed to improve your game — from first training session to elite performance.</p>
+
+    <div class="features-grid">
+      <div class="feat-card fade-up stagger-1">
+        <div class="feat-card-accent" style="background:var(--purple)"></div>
+        <div class="feat-icon">🧬</div>
+        <h3 class="feat-title">Cricket DNA</h3>
+        <p class="feat-desc">106 unique profiles matched against your full training history via AI cosine similarity. Discover which pro cricketer your game most resembles.</p>
+        <span class="feat-badge badge-p">AI-Powered</span>
+      </div>
+      <div class="feat-card fade-up stagger-2">
+        <div class="feat-card-accent" style="background:var(--blue)"></div>
+        <div class="feat-icon">🏏</div>
+        <h3 class="feat-title">AI Drill Library</h3>
+        <p class="feat-desc">35+ batting, bowling, fielding, and keeping drills. Step-by-step instructions, curated video links, Bronze → Silver → Gold tier progression.</p>
+        <span class="feat-badge badge-b">35+ Drills</span>
+      </div>
+      <div class="feat-card fade-up stagger-3">
+        <div class="feat-card-accent" style="background:var(--purple)"></div>
+        <div class="feat-icon">🧠</div>
+        <h3 class="feat-title">Mental Training</h3>
+        <p class="feat-desc">70+ guided sessions for focus, pressure, confidence, and recovery. The AI selects the perfect session based on your streak, time of day, and performance data.</p>
+        <span class="feat-badge badge-p">70+ Sessions</span>
+      </div>
+      <div class="feat-card fade-up stagger-4">
+        <div class="feat-card-accent" style="background:var(--gold)"></div>
+        <div class="feat-icon">🎯</div>
+        <h3 class="feat-title">ProVision™ Video Analysis</h3>
+        <p class="feat-desc">Upload any batting or bowling video. AI pose estimation analyses 8+ biomechanical metrics, checks ICC elbow compliance, and grades your technique in seconds.</p>
+        <span class="feat-badge badge-y">New Feature</span>
+      </div>
+      <div class="feat-card fade-up stagger-5">
+        <div class="feat-card-accent" style="background:var(--blue)"></div>
+        <div class="feat-icon">📊</div>
+        <h3 class="feat-title">Player Rating</h3>
+        <p class="feat-desc">Your live rating across 6 axes — batting, bowling, fielding, mental, fitness, consistency — on a live radar chart. Every session updates your score in real time.</p>
+        <span class="feat-badge badge-b">Live Tracking</span>
+      </div>
+      <div class="feat-card fade-up stagger-6">
+        <div class="feat-card-accent" style="background:var(--teal)"></div>
+        <div class="feat-icon">🏆</div>
+        <h3 class="feat-title">30-Day Challenge</h3>
+        <p class="feat-desc">A structured journey from Foundation to Elite. Weekly themes, milestone celebrations, catch-up shields, and full confetti at Day 30. Most players quit at Day 14.</p>
+        <span class="feat-badge badge-t">30 Days</span>
+      </div>
+      <div class="feat-card fade-up stagger-7">
+        <div class="feat-card-accent" style="background:var(--blue)"></div>
+        <div class="feat-icon">🎳</div>
+        <h3 class="feat-title">The Daily Net</h3>
+        <p class="feat-desc">5 cricket questions every day — tactics, laws, technique, history. Same questions worldwide. Build a streak, compare scores with everyone.</p>
+        <span class="feat-badge badge-b">Daily Quiz</span>
+      </div>
+      <div class="feat-card fade-up stagger-8">
+        <div class="feat-card-accent" style="background:var(--gold)"></div>
+        <div class="feat-icon">⭐</div>
+        <h3 class="feat-title">BrainEngine™ AI</h3>
+        <p class="feat-desc">4 neural models learn your playing style, adapt drill difficulty, and recommend sessions as you improve. The app gets smarter with every session you log.</p>
+        <span class="feat-badge badge-y">Adaptive AI</span>
+      </div>
+      <div class="feat-card fade-up stagger-9">
+        <div class="feat-card-accent" style="background:var(--green)"></div>
+        <div class="feat-icon">💪</div>
+        <h3 class="feat-title">Fitness + Scheduling</h3>
+        <p class="feat-desc">80+ cricket-specific workouts, a smart training calendar, AI-generated weekly programs, interval timers, and a full skill path from Club to Elite.</p>
+        <span class="feat-badge badge-g">80+ Workouts</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── HOW IT WORKS ─────────────────────────────────────────── -->
+<div class="steps-section section fade-up">
+  <div class="section-inner">
+    <p class="section-eyebrow">How it works</p>
+    <h2 class="section-title">From waitlist<br>to elite training.</h2>
+    <p class="section-body" style="margin-bottom:40px">Three steps. No credit card. Your best cricket starts here.</p>
+    <div class="steps-grid">
+      <div class="step fade-up stagger-1">
+        <div class="step-bg-num">1</div>
+        <div class="step-icon-wrap">✍️</div>
+        <span class="step-num-badge">Step 01</span>
+        <h3 class="step-title">Join the waitlist</h3>
+        <p class="step-desc">Enter your details above, share your referral link with teammates, and move up the queue. Top 100 referrers get 3 months of Pro free on launch day.</p>
+      </div>
+      <div class="step fade-up stagger-2">
+        <div class="step-bg-num">2</div>
+        <div class="step-icon-wrap">📧</div>
+        <span class="step-num-badge">Step 02</span>
+        <h3 class="step-title">Receive your invite</h3>
+        <p class="step-desc">We'll email you the moment your spot opens. Complete a quick 60-second profile — your role, level, and goals — and your personalised training plan is ready.</p>
+      </div>
+      <div class="step fade-up stagger-3">
+        <div class="step-bg-num">3</div>
+        <div class="step-icon-wrap">🚀</div>
+        <span class="step-num-badge">Step 03</span>
+        <h3 class="step-title">Train like a pro</h3>
+        <p class="step-desc">Every feature unlocked from day one — drills, mental sessions, Cricket DNA, video analysis, the full 30-Day Challenge. The app builds around you from the first session.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TESTIMONIALS ─────────────────────────────────────────── -->
+<div class="section fade-up">
+  <div class="section-inner">
+    <p class="section-eyebrow">Early access feedback</p>
+    <h2 class="section-title">What beta testers say.</h2>
+    <p class="section-body" style="margin-bottom:40px">Real feedback from the cricketers who got in first.</p>
+    <div class="testimonials-grid">
+      <div class="testi fade-up stagger-1">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"The Cricket DNA feature blew my mind — apparently I play like Virat Kohli crossed with Kane Williamson. My teammates didn't believe me until I showed them the radar chart."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">AR</div>
+          <div>
+            <div class="testi-name">Arjun R.</div>
+            <div class="testi-role">District batsman · Mumbai, India</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi fade-up stagger-2">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"I do the mental sessions every morning before nets. My concentration in the middle has improved dramatically. The Pressure Is Privilege session alone is worth the whole app."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">JT</div>
+          <div>
+            <div class="testi-name">Jamie T.</div>
+            <div class="testi-role">Club all-rounder · Yorkshire, England</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi fade-up stagger-3">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"ProVision™ flagged that my front knee was collapsing at delivery — something my coach had never noticed. Fixed it in two weeks. My pace went up by 4 km/h."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">KP</div>
+          <div>
+            <div class="testi-name">Kofi P.</div>
+            <div class="testi-role">State fast bowler · Accra, Ghana</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FAQ ──────────────────────────────────────────────────── -->
+<div class="section fade-up" style="border-top:1px solid var(--border)">
+  <div class="section-inner">
+    <p class="section-eyebrow">FAQ</p>
+    <h2 class="section-title">Questions? Answered.</h2>
+    <p class="section-body" style="margin-bottom:36px">Everything about early access, pricing, and the platform.</p>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Is SmartCrick AI free?
+          <div class="faq-chevron">+</div>
+        </button>
+        <div class="faq-a">Yes — SmartCrick AI has a generous free tier with drills, mental sessions, the 30-Day Challenge, Daily Net, and your Cricket DNA. Pro features (ProVision™ video analysis, AI Head Coach, full BrainEngine™ neural training) require a Pro subscription. Waitlist members who refer 5+ friends get 3 months of Pro completely free at launch.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          When does early access open?
+          <div class="faq-chevron">+</div>
+        </button>
+        <div class="faq-a">We're rolling out early access in batches from Q3 2025. The earlier you join — and the more friends you refer — the sooner you'll receive your invite. Top 100 on the waitlist get immediate Day 1 access plus 3 months of Pro free.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What devices does it work on?
+          <div class="faq-chevron">+</div>
+        </button>
+        <div class="faq-a">SmartCrick AI is a web app — it works on any modern browser on iPhone, Android, desktop, or tablet. No app store required. Open the link, log in, and start training. Native iOS and Android apps are in development for later in 2025.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How does the referral system work?
+          <div class="faq-chevron">+</div>
+        </button>
+        <div class="faq-a">After joining, you get a unique referral link. Every friend who signs up using your link moves you up 5 spots on the waitlist. Refer 5 friends to unlock Priority Access territory. The top 100 referrers at launch get immediate access plus 3 months of Pro — no limit on how many you can refer.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Do I need to be a professional cricketer?
+          <div class="faq-chevron">+</div>
+        </button>
+        <div class="faq-a">Not at all. SmartCrick AI is built for every level — complete beginners through to state and national players. The AI adapts drill difficulty, mental session selection, and training recommendations automatically based on your role, level, and progress.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FINAL CTA ────────────────────────────────────────────── -->
+<div class="final-cta fade-up">
+  <div class="final-cta-glow" aria-hidden="true"></div>
+  <div class="final-inner">
+    <p class="section-eyebrow" style="text-align:center">Ready to start?</p>
+    <h2 class="section-title" style="text-align:center;margin-bottom:10px">Your future self<br>plays differently.</h2>
+    <p style="font-size:16px;color:var(--text3);text-align:center;max-width:440px;margin:0 auto;line-height:1.7">Join 3,247+ cricketers waiting for the most complete cricket training platform ever built. Your spot is limited. The waitlist is free.</p>
+    <div style="text-align:center">
+      <button class="btn-final" onclick="scrollToForm()">
+        Join the Waitlist — Free
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+    <p style="font-size:12px;color:var(--text4);text-align:center;margin-top:14px">No credit card. No commitment. Instant position assigned.</p>
+  </div>
+</div>
+
+<!-- ── FOOTER ───────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-brand">
+    <div class="footer-icon">🏏</div>
+    <span class="footer-name">SmartCrick AI</span>
+  </div>
+  <div class="footer-links">
+    <a href="/leaderboard.html">🏆 Leaderboard</a>
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="mailto:hello@smartcrickai.com">Contact</a>
+  </div>
+  <span class="footer-copy">© 2025 SmartCrick AI. All rights reserved.</span>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT
+     ═══════════════════════════════════════════════════════════ -->
+<script>
+/*
+ * SmartCrick Waitlist — Frontend Logic v2.0
+ *
+ * API INTEGRATION:
+ *   Set USE_API = true and deploy with api/waitlist.js on Vercel.
+ *   When USE_API = false, falls back to localStorage (demo mode).
+ */
+const USE_API  = false; // ← set true after deploying api/waitlist.js
+const API_PATH = '/api/waitlist';
+const SITE_URL = window.location.origin + window.location.pathname;
+const PRIORITY_THRESHOLD = 100; // top N get 3 months free
+
+/* ── URL params ──────────────────────────────────────────── */
+const urlParams = new URLSearchParams(window.location.search);
+const REF_FROM_URL = urlParams.get('ref') || '';
+if (REF_FROM_URL) {
+  document.getElementById('ref-banner').style.display = 'block';
+}
+
+/* ── LocalStorage helpers ────────────────────────────────── */
+function loadState()  { try { return JSON.parse(localStorage.getItem('sc_wl_v2') || 'null'); } catch { return null; } }
+function saveState(s) { try { localStorage.setItem('sc_wl_v2', JSON.stringify(s)); } catch {} }
+
+/* ── Ref code generator ──────────────────────────────────── */
+function genCode() {
+  const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return 'SC' + Array.from({length:6}, () => c[Math.floor(Math.random()*c.length)]).join('');
+}
+
+/* ── Position generator (localStorage mode) ──────────────── */
+const BASE = 3247;
+let currentCount = BASE;
+function genPosition() { return ++currentCount; }
+
+/* ── Number formatter ────────────────────────────────────── */
+const fmt = n => n.toLocaleString();
+
+/* ── Animated counter ────────────────────────────────────── */
+function animateCounter(el, to, duration = 1400) {
+  if (!el) return;
+  const from = Math.max(to - 120, 3000);
+  const start = performance.now();
+  const step = now => {
+    const t = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1-t, 4);
+    el.textContent = fmt(Math.round(from + (to - from) * ease));
+    if (t < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+/* ── Live counter polling ─────────────────────────────────── */
+async function fetchLiveCount() {
+  if (!USE_API) return;
+  try {
+    const r = await fetch(API_PATH);
+    if (r.ok) {
+      const { count } = await r.json();
+      if (count > currentCount) {
+        currentCount = count;
+        animateCounter(document.getElementById('live-count'), count, 800);
+        animateCounter(document.getElementById('proof-count'), count, 800);
+      }
+    }
+  } catch {}
+}
+
+/* ── Simulate live count ticking ─────────────────────────── */
+function startLiveTick() {
+  let displayCount = BASE;
+  const countEl = document.getElementById('live-count');
+  const proofEl = document.getElementById('proof-count');
+  const lastHour = document.getElementById('last-hour-count');
+  setInterval(() => {
+    if (Math.random() < 0.4) {
+      displayCount++;
+      animateCounter(countEl, displayCount, 600);
+      animateCounter(proofEl, displayCount, 600);
+    }
+    if (lastHour) {
+      const h = parseInt(lastHour.textContent) || 47;
+      if (Math.random() < 0.2) lastHour.textContent = h + 1;
+    }
+  }, 12000);
+}
+
+/* ── Activity toast data ──────────────────────────────────── */
+const ACTIVITIES = [
+  { name:'Rahul', loc:'Mumbai, India', icon:'🇮🇳' },
+  { name:'James', loc:'Sydney, Australia', icon:'🇦🇺' },
+  { name:'Priya', loc:'Colombo, Sri Lanka', icon:'🇱🇰' },
+  { name:'Kofi', loc:'Accra, Ghana', icon:'🇬🇭' },
+  { name:'Tom', loc:'London, England', icon:'🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+  { name:'Amir', loc:'Lahore, Pakistan', icon:'🇵🇰' },
+  { name:'Sarah', loc:'Cape Town, South Africa', icon:'🇿🇦' },
+  { name:'Dev', loc:'Wellington, New Zealand', icon:'🇳🇿' },
+  { name:'Fatima', loc:'Dhaka, Bangladesh', icon:'🇧🇩' },
+  { name:'Chris', loc:'Kingston, Jamaica', icon:'🇯🇲' },
+  { name:'Anjali', loc:'Delhi, India', icon:'🇮🇳' },
+  { name:'Marcus', loc:'Bridgetown, Barbados', icon:'🇧🇧' },
+  { name:'Liam', loc:'Melbourne, Australia', icon:'🇦🇺' },
+  { name:'Tanya', loc:'Birmingham, England', icon:'🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+  { name:'Yusuf', loc:'Karachi, Pakistan', icon:'🇵🇰' },
+];
+let lastActivityIdx = -1;
+function showActivity() {
+  let idx;
+  do { idx = Math.floor(Math.random() * ACTIVITIES.length); } while (idx === lastActivityIdx);
+  lastActivityIdx = idx;
+  const a = ACTIVITIES[idx];
+  const times = ['Just now', '1 min ago', '2 min ago'];
+  const time  = times[Math.floor(Math.random() * times.length)];
+  const toast = document.getElementById('activity-toast');
+  document.getElementById('toast-icon').textContent  = a.icon;
+  document.getElementById('toast-text').innerHTML = `<strong>${a.name}</strong> from ${a.loc} joined`;
+  document.getElementById('toast-time').textContent = time;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 4500);
+}
+function scheduleActivity() {
+  const delay = 8000 + Math.random() * 16000;
+  setTimeout(() => { showActivity(); scheduleActivity(); }, delay);
+}
+
+/* ── Form validation ──────────────────────────────────────── */
+function validate() {
+  let ok = true;
+  const name  = document.getElementById('f-name');
+  const email = document.getElementById('f-email');
+  const eName = document.getElementById('err-name');
+  const eEmail= document.getElementById('err-email');
+
+  name.classList.remove('err'); eName.classList.remove('show');
+  email.classList.remove('err'); eEmail.classList.remove('show');
+
+  if (!name.value.trim()) {
+    name.classList.add('err'); eName.classList.add('show'); ok = false;
+  }
+  const emailVal = email.value.trim();
+  if (!emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+    email.classList.add('err'); eEmail.classList.add('show'); ok = false;
+  }
+  return ok;
+}
+
+/* ── Submit handler ───────────────────────────────────────── */
+async function handleSubmit() {
+  if (!validate()) return;
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.classList.add('loading');
+
+  const name  = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const role  = document.getElementById('f-role').value;
+  const level = document.getElementById('f-level').value;
+
+  let position, refCode;
+
+  if (USE_API) {
+    try {
+      const res = await fetch(API_PATH, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, role, level, referredBy: REF_FROM_URL })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'API error');
+      position = data.position;
+      refCode  = data.refCode;
+    } catch (err) {
+      console.error('API error:', err);
+      // Fallback to local
+      position = genPosition();
+      refCode  = genCode();
+    }
+  } else {
+    // Demo mode — localStorage
+    await new Promise(r => setTimeout(r, 1100));
+    position = genPosition();
+    refCode  = genCode();
+  }
+
+  saveState({ name, email, role, level, refCode, position, referredBy: REF_FROM_URL, referrals: 0, joinedAt: Date.now() });
+
+  btn.classList.remove('loading');
+  fireConfetti();
+  renderConfirmation(position, refCode);
+}
+
+/* ── Render confirmation ──────────────────────────────────── */
+function renderConfirmation(position, refCode) {
+  document.getElementById('form-state').style.display   = 'none';
+  document.getElementById('confirm-state').style.display = 'block';
+
+  document.getElementById('c-position').textContent = '#' + fmt(position);
+
+  const refUrl = new URL(SITE_URL);
+  refUrl.searchParams.set('ref', refCode);
+  const refUrlStr = refUrl.toString();
+
+  const urlEl = document.getElementById('ref-url-display');
+  urlEl.textContent  = refUrlStr;
+  urlEl.dataset.url  = refUrlStr;
+  urlEl.dataset.code = refCode;
+
+  // Progress bar toward priority (position ≤ PRIORITY_THRESHOLD = 100%)
+  const pct = Math.max(5, Math.min(98, Math.round((1 - position / (BASE + 200)) * 100)));
+  setTimeout(() => {
+    document.getElementById('progress-fill').style.width = pct + '%';
+    const spotsAway = Math.max(0, position - PRIORITY_THRESHOLD);
+    const subEl = document.getElementById('progress-sub');
+    if (position <= PRIORITY_THRESHOLD) {
+      subEl.textContent = '🎉 You\'re in Priority Access territory! 3 months of Pro secured.';
+      subEl.style.color = 'var(--green-light)';
+    } else {
+      const refs = Math.ceil(spotsAway / 5);
+      subEl.textContent = `Refer ~${refs} friend${refs !== 1 ? 's' : ''} to reach Priority Access`;
+    }
+  }, 400);
+
+  // Scroll to confirmation
+  document.getElementById('confirm-state').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+/* ── Check saved state on load ────────────────────────────── */
+function init() {
+  const saved = loadState();
+  if (saved) {
+    renderConfirmation(saved.position, saved.refCode);
+  }
+
+  // Fetch live count
+  fetchLiveCount();
+  setInterval(fetchLiveCount, 30000);
+
+  // Animate counter on load
+  const countEl   = document.getElementById('live-count');
+  const proofEl   = document.getElementById('proof-count');
+  const targetCount = saved ? currentCount + (saved.referrals || 0) * 3 : BASE;
+  animateCounter(countEl, targetCount);
+  animateCounter(proofEl, targetCount);
+
+  // Start live tick & activity
+  startLiveTick();
+  setTimeout(scheduleActivity, 5000);
+
+  // Scroll nav shadow
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 10);
+  }, { passive: true });
+
+  // Intersection observer
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+}
+
+/* ── Copy referral link ───────────────────────────────────── */
+function copyRef() {
+  const urlEl = document.getElementById('ref-url-display');
+  const url   = urlEl?.dataset?.url || urlEl?.textContent;
+  if (!url) return;
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2500);
+  }).catch(() => {
+    const range = document.createRange();
+    range.selectNode(urlEl);
+    window.getSelection()?.removeAllRanges();
+    window.getSelection()?.addRange(range);
+  });
+}
+
+/* ── Share functions ──────────────────────────────────────── */
+function getRefUrl() {
+  return document.getElementById('ref-url-display')?.dataset?.url || SITE_URL;
+}
+function shareWhatsApp() {
+  const msg = `Join me on SmartCrick AI 🏏 — the world's first AI cricket training platform!\n\nGet early access here → ${getRefUrl()}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+}
+function shareTwitter() {
+  const msg = `Just joined the SmartCrick AI waitlist 🏏\n\nAI cricket drills · mental coaching · Cricket DNA · video analysis — all in one app.\n\nGet your spot → ${getRefUrl()}\n\n#cricket #SmartCrick #crickettraining`;
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+/* ── FAQ accordion ────────────────────────────────────────── */
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const open = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+  if (!open) item.classList.add('open');
+}
+
+/* ── Scroll to form ───────────────────────────────────────── */
+function scrollToForm() {
+  const target = document.getElementById('form-state');
+  const confirm = document.getElementById('confirm-state');
+  if (target && target.style.display !== 'none') {
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } else if (confirm && confirm.style.display !== 'none') {
+    confirm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+/* ── Confetti ─────────────────────────────────────────────── */
+function fireConfetti() {
+  const opts = { colors: ['#16a34a','#4ade80','#22c55e','#0d9488','#f0fdf4','#86efac'] };
+  confetti({ ...opts, particleCount: 120, spread: 80, origin: { y: 0.55 } });
+  setTimeout(() => {
+    confetti({ ...opts, particleCount: 60, angle: 60, spread: 55, origin: { x: 0, y: 0.6 } });
+    confetti({ ...opts, particleCount: 60, angle: 120, spread: 55, origin: { x: 1, y: 0.6 } });
+  }, 350);
+}
+
+/* ── Boot ─────────────────────────────────────────────────── */
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
