@@ -1,0 +1,21 @@
+{
+  "name": "smartcrick-waitlist",
+  "version": "1.0.0",
+  "description": "SmartCrick AI — Early access waitlist with referral system",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod",
+    "deploy:preview": "vercel"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.43.0",
+    "resend": "^3.2.0"
+  },
+  "devDependencies": {
+    "vercel": "^34.0.0"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+}
