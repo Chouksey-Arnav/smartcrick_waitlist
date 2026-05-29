@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0c0f">
+<meta name="description" content="SmartCrick AI Referral Leaderboard — See who's moving up the waitlist fastest.">
+<meta property="og:title" content="SmartCrick AI — Referral Leaderboard 🏆">
+<meta property="og:description" content="See the top referrers on the SmartCrick AI waitlist. Refer friends to move up and unlock early access.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏆</text></svg>">
+<title>SmartCrick AI — Referral Leaderboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0c0f;--bg2:#111318;--bg3:#161b22;--bg4:#1c2128;
+  --border:rgba(55,62,72,.9);--border-em:rgba(85,95,110,1);
+  --green:#16a34a;--green-dim:rgba(22,163,74,.12);--green-glow:rgba(22,163,74,.28);
+  --green-light:#4ade80;--teal:#0d9488;
+  --gold:#f59e0b;--gold-dim:rgba(245,158,11,.12);--gold-light:#fbbf24;
+  --silver:#94a3b8;--silver-dim:rgba(148,163,184,.1);
+  --bronze:#b45309;--bronze-dim:rgba(180,83,9,.1);
+  --text1:#f0fdf4;--text2:#c9d1d9;--text3:#8b949e;--text4:#484f58;
+  --r:12px;--rl:16px;--rxl:20px;
+  --sans:'Plus Jakarta Sans',system-ui,sans-serif;
+  --display:'Rajdhani',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text1);font-family:var(--sans);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+a{color:inherit;text-decoration:none}button{font-family:var(--sans);cursor:pointer}
+
+/* Grid bg */
+.grid-bg{
+  background-image:linear-gradient(rgba(22,163,74,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(22,163,74,.025) 1px,transparent 1px);
+  background-size:48px 48px;
+}
+
+/* ── Nav ──────────────────────────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:60;height:60px;
+  padding:0 clamp(16px,4vw,32px);
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(10,12,15,.92);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo-icon{
+  width:32px;height:32px;border-radius:9px;font-size:17px;
+  background:linear-gradient(135deg,var(--green),var(--teal));
+  display:flex;align-items:center;justify-content:center;
+}
+.nav-wordmark{font-family:var(--display);font-size:20px;font-weight:700;color:var(--text1)}
+.btn-back{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 16px;border-radius:var(--r);
+  border:1px solid var(--border);background:transparent;
+  font-size:13px;font-weight:600;color:var(--text3);
+  transition:all .15s;
+}
+.btn-back:hover{color:var(--text1);border-color:var(--border-em);background:var(--bg3)}
+.btn-back svg{transition:transform .15s}
+.btn-back:hover svg{transform:translateX(-2px)}
+
+/* ── Hero ─────────────────────────────────────────────────── */
+.hero{
+  padding:clamp(88px,12vw,110px) clamp(16px,4vw,40px) 48px;
+  text-align:center;position:relative;overflow:hidden;
+}
+.hero-glow{
+  position:absolute;border-radius:50%;pointer-events:none;
+  width:600px;height:600px;top:-100px;left:50%;transform:translateX(-50%);
+  background:radial-gradient(circle,rgba(245,158,11,.06) 0%,transparent 70%);
+  filter:blur(60px);
+}
+.hero-label{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gold-light);background:var(--gold-dim);
+  border:1px solid rgba(245,158,11,.3);
+  padding:6px 16px;border-radius:20px;margin-bottom:20px;
+}
+.hero-h1{
+  font-family:var(--display);
+  font-size:clamp(36px,6vw,64px);font-weight:700;line-height:1.05;
+  letter-spacing:-.01em;color:var(--text1);margin-bottom:14px;
+}
+.hero-h1 span{color:var(--gold-light)}
+.hero-sub{
+  font-size:clamp(14px,2vw,17px);color:var(--text3);
+  max-width:480px;margin:0 auto 32px;line-height:1.7;
+}
+
+/* ── Stats bar ────────────────────────────────────────────── */
+.stats-bar{
+  display:flex;align-items:center;justify-content:center;
+  gap:clamp(20px,4vw,48px);flex-wrap:wrap;
+  padding:24px;max-width:700px;margin:0 auto 40px;
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);
+}
+.stat{text-align:center}
+.stat-num{font-family:var(--display);font-size:clamp(22px,3vw,30px);font-weight:700;color:var(--text1);line-height:1.1}
+.stat-lbl{font-size:11px;color:var(--text4);margin-top:2px;font-weight:500}
+.stat-div{width:1px;height:36px;background:var(--border)}
+@media(max-width:500px){.stat-div{display:none}}
+
+/* ── Main content area ────────────────────────────────────── */
+.main{max-width:860px;margin:0 auto;padding:0 clamp(16px,4vw,24px) 80px}
+
+/* ── Your position card ───────────────────────────────────── */
+.your-card{
+  background:var(--bg3);border:1px solid rgba(22,163,74,.3);
+  border-radius:var(--rxl);padding:24px;margin-bottom:28px;
+  position:relative;overflow:hidden;display:none;
+}
+.your-card.show{display:block}
+.your-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--green-light))}
+.your-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.your-card-title{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text4)}
+.your-position-badge{
+  font-family:var(--display);font-size:26px;font-weight:700;
+  color:var(--green-light);background:var(--green-dim);
+  border:1px solid rgba(22,163,74,.3);
+  padding:4px 16px;border-radius:var(--r);
+}
+.your-card-body{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.your-stat{text-align:center;flex:1;min-width:80px}
+.your-stat-num{font-family:var(--display);font-size:28px;font-weight:700;color:var(--text1)}
+.your-stat-lbl{font-size:11px;color:var(--text4);margin-top:2px}
+.your-ref-row{flex:2;min-width:200px}
+.your-ref-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text4);margin-bottom:6px}
+.your-ref-link-wrap{display:flex;gap:8px}
+.your-ref-input{
+  flex:1;padding:9px 12px;
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);
+  color:var(--text3);font-size:12px;font-family:monospace;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.btn-copy-sm{
+  padding:9px 14px;border-radius:var(--r);
+  background:var(--green-dim);border:1px solid rgba(22,163,74,.3);
+  color:var(--green-light);font-size:12px;font-weight:600;
+  white-space:nowrap;transition:background .15s;
+}
+.btn-copy-sm:hover{background:rgba(22,163,74,.22)}
+.btn-copy-sm.copied{background:rgba(22,163,74,.3);color:#fff}
+
+/* ── Section header ───────────────────────────────────────── */
+.section-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;flex-wrap:wrap;gap:10px;
+}
+.section-title{font-size:18px;font-weight:700;color:var(--text1)}
+.live-badge{
+  display:flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:700;color:var(--green-light);
+  background:var(--green-dim);border:1px solid rgba(22,163,74,.3);
+  padding:5px 12px;border-radius:20px;
+}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:breathe 1.5s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.75)}}
+
+/* ── Podium (top 3) ───────────────────────────────────────── */
+.podium{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:12px;margin-bottom:24px;align-items:end;
+}
+.podium-card{
+  border-radius:var(--rl);padding:20px 16px;text-align:center;
+  border:1px solid;position:relative;overflow:hidden;
+  transition:transform .2s;
+}
+.podium-card:hover{transform:translateY(-4px)}
+.podium-card.rank-1{
+  background:linear-gradient(160deg,rgba(245,158,11,.12),rgba(251,191,36,.06));
+  border-color:rgba(245,158,11,.4);order:2;
+}
+.podium-card.rank-2{
+  background:linear-gradient(160deg,rgba(148,163,184,.1),rgba(148,163,184,.04));
+  border-color:rgba(148,163,184,.3);order:1;
+}
+.podium-card.rank-3{
+  background:linear-gradient(160deg,rgba(180,83,9,.1),rgba(180,83,9,.04));
+  border-color:rgba(180,83,9,.3);order:3;
+}
+.podium-crown{font-size:28px;display:block;margin-bottom:6px}
+.podium-rank{
+  font-size:10px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:6px;
+}
+.rank-1 .podium-rank{color:var(--gold)}
+.rank-2 .podium-rank{color:var(--silver)}
+.rank-3 .podium-rank{color:var(--bronze)}
+.podium-avatar{
+  width:48px;height:48px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:700;color:#fff;
+  margin:0 auto 8px;
+}
+.rank-1 .podium-avatar{background:linear-gradient(135deg,#d97706,#f59e0b);box-shadow:0 0 16px rgba(245,158,11,.3)}
+.rank-2 .podium-avatar{background:linear-gradient(135deg,#64748b,#94a3b8);box-shadow:0 0 12px rgba(148,163,184,.2)}
+.rank-3 .podium-avatar{background:linear-gradient(135deg,#92400e,#b45309);box-shadow:0 0 12px rgba(180,83,9,.2)}
+.podium-name{font-size:14px;font-weight:700;color:var(--text1);margin-bottom:4px}
+.podium-referrals{font-size:12px;color:var(--text3)}
+.podium-referrals strong{font-family:var(--display);font-size:18px;font-weight:700;display:block}
+.rank-1 .podium-referrals strong{color:var(--gold)}
+.rank-2 .podium-referrals strong{color:var(--silver)}
+.rank-3 .podium-referrals strong{color:var(--bronze)}
+.podium-bar{position:absolute;bottom:0;left:0;right:0}
+.rank-1 .podium-bar{height:4px;background:linear-gradient(90deg,var(--gold),var(--gold-light))}
+.rank-2 .podium-bar{height:3px;background:var(--silver)}
+.rank-3 .podium-bar{height:2px;background:var(--bronze)}
+@media(max-width:480px){
+  .podium{grid-template-columns:1fr;align-items:start}
+  .podium-card{order:unset!important}
+}
+
+/* ── Leaderboard table ────────────────────────────────────── */
+.lb-table{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--rl);overflow:hidden;margin-bottom:24px;
+}
+.lb-row{
+  display:grid;grid-template-columns:52px 1fr 110px 120px;
+  align-items:center;gap:12px;padding:14px 20px;
+  border-bottom:1px solid var(--border);
+  transition:background .15s;
+  animation:rowIn .4s ease both;
+}
+.lb-row:last-child{border-bottom:none}
+.lb-row:hover{background:var(--bg4)}
+.lb-row.you-row{background:rgba(22,163,74,.06);border-color:rgba(22,163,74,.2)}
+@keyframes rowIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+.lb-rank{
+  font-family:var(--display);font-size:18px;font-weight:700;
+  text-align:center;color:var(--text4);
+}
+.lb-rank.top1{color:var(--gold)}
+.lb-rank.top2{color:var(--silver)}
+.lb-rank.top3{color:var(--bronze)}
+.lb-person{display:flex;align-items:center;gap:10px;min-width:0}
+.lb-avatar{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:#fff;
+}
+.lb-name-wrap{min-width:0}
+.lb-name{font-size:14px;font-weight:600;color:var(--text1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-sub{font-size:11px;color:var(--text4)}
+.lb-refs{
+  font-family:var(--display);font-size:20px;font-weight:700;
+  color:var(--text1);text-align:right;
+}
+.lb-refs-label{font-size:10px;color:var(--text4);display:block;text-align:right;margin-top:-2px}
+.lb-progress-wrap{display:flex;flex-direction:column;gap:4px}
+.lb-progress-bar{height:5px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.lb-progress-fill{height:100%;border-radius:3px;transition:width 1s ease}
+.lb-you-badge{
+  font-size:10px;font-weight:700;letter-spacing:.06em;
+  padding:2px 8px;border-radius:20px;
+  background:var(--green-dim);border:1px solid rgba(22,163,74,.3);
+  color:var(--green-light);
+}
+@media(max-width:600px){
+  .lb-row{grid-template-columns:36px 1fr 70px;gap:8px;padding:12px 14px}
+  .lb-progress-wrap{display:none}
+  .lb-name{font-size:13px}
+  .lb-refs{font-size:16px}
+}
+
+/* ── Milestones ───────────────────────────────────────────── */
+.milestones{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:12px;margin-bottom:32px;
+}
+.milestone{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px;text-align:center;
+  transition:border-color .2s;
+}
+.milestone:hover{border-color:var(--border-em)}
+.milestone-icon{font-size:24px;margin-bottom:8px;display:block}
+.milestone-val{
+  font-family:var(--display);font-size:22px;font-weight:700;
+  color:var(--text1);margin-bottom:2px;
+}
+.milestone-desc{font-size:12px;color:var(--text3)}
+.milestone-reward{
+  font-size:11px;font-weight:700;margin-top:8px;
+  padding:3px 10px;border-radius:20px;
+  border:1px solid;display:inline-block;
+}
+.reward-g{background:var(--green-dim);border-color:rgba(22,163,74,.3);color:var(--green-light)}
+.reward-y{background:var(--gold-dim);border-color:rgba(245,158,11,.3);color:var(--gold)}
+.reward-p{background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.3);color:#a78bfa}
+
+/* ── Share CTA ────────────────────────────────────────────── */
+.share-cta{
+  background:var(--bg3);border:1px solid rgba(22,163,74,.25);
+  border-radius:var(--rxl);padding:28px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.share-cta::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--green),var(--green-light),var(--teal));
+}
+.share-cta-title{font-size:20px;font-weight:700;color:var(--text1);margin-bottom:8px}
+.share-cta-sub{font-size:14px;color:var(--text3);margin-bottom:20px;line-height:1.6}
+.share-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-wa{
+  display:flex;align-items:center;gap:7px;
+  padding:12px 20px;border-radius:var(--r);
+  border:1px solid rgba(37,211,102,.3);background:rgba(37,211,102,.08);
+  font-size:14px;font-weight:600;color:#25d366;
+  transition:all .15s;
+}
+.btn-wa:hover{background:rgba(37,211,102,.15)}
+.btn-x{
+  display:flex;align-items:center;gap:7px;
+  padding:12px 20px;border-radius:var(--r);
+  border:1px solid var(--border);background:var(--bg2);
+  font-size:14px;font-weight:600;color:var(--text2);
+  transition:all .15s;
+}
+.btn-x:hover{background:var(--bg4);color:var(--text1)}
+.btn-cta{
+  padding:12px 24px;border-radius:var(--r);
+  background:var(--green);border:none;
+  font-family:var(--display);font-size:16px;font-weight:700;
+  color:#fff;letter-spacing:.03em;
+  transition:background .15s,transform .1s;
+  box-shadow:0 4px 14px rgba(22,163,74,.25);
+}
+.btn-cta:hover{background:#15803d;transform:translateY(-1px)}
+
+/* ── Footer ───────────────────────────────────────────────── */
+footer{
+  padding:28px clamp(16px,4vw,32px);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+  border-top:1px solid var(--border);max-width:860px;margin:0 auto;
+}
+.footer-links{display:flex;gap:20px}
+.footer-links a{font-size:13px;color:var(--text4);transition:color .15s}
+.footer-links a:hover{color:var(--text2)}
+.footer-copy{font-size:12px;color:var(--text4)}
+
+/* ── Animations ───────────────────────────────────────────── */
+.fade-up{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+.stagger-1{transition-delay:.05s}.stagger-2{transition-delay:.12s}.stagger-3{transition-delay:.19s}
+.stagger-4{transition-delay:.26s}.stagger-5{transition-delay:.33s}
+
+@media(max-width:640px){
+  .share-btns{flex-direction:column}
+  .btn-wa,.btn-x,.btn-cta{justify-content:center;width:100%}
+}
+</style>
+</head>
+<body class="grid-bg">
+
+<!-- Nav -->
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">🏏</div>
+    <span class="nav-wordmark">SmartCrick</span>
+  </a>
+  <a href="/" class="btn-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Back to Waitlist
+  </a>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <p class="hero-label">🏆 Live Rankings</p>
+  <h1 class="hero-h1">The Referral<br><span>Leaderboard</span></h1>
+  <p class="hero-sub">Every friend you refer moves you up 5 spots. Top 100 at launch get immediate access + 3 months of Pro free.</p>
+
+  <!-- Stats bar -->
+  <div class="stats-bar fade-up">
+    <div class="stat">
+      <div class="stat-num" id="stat-total">3,247</div>
+      <div class="stat-lbl">On the waitlist</div>
+    </div>
+    <div class="stat-div" aria-hidden="true"></div>
+    <div class="stat">
+      <div class="stat-num" id="stat-referrals">842</div>
+      <div class="stat-lbl">Total referrals made</div>
+    </div>
+    <div class="stat-div" aria-hidden="true"></div>
+    <div class="stat">
+      <div class="stat-num" id="stat-top">100</div>
+      <div class="stat-lbl">Priority access spots</div>
+    </div>
+    <div class="stat-div" aria-hidden="true"></div>
+    <div class="stat">
+      <div class="stat-num">+5</div>
+      <div class="stat-lbl">Spots per referral</div>
+    </div>
+  </div>
+</div>
+
+<!-- Main content -->
+<div class="main">
+
+  <!-- Your position card (shown if joined) -->
+  <div class="your-card" id="your-card">
+    <div class="your-card-header">
+      <span class="your-card-title">⭐ Your Position</span>
+      <span class="your-position-badge" id="your-position-badge">#3,248</span>
+    </div>
+    <div class="your-card-body">
+      <div class="your-stat">
+        <div class="your-stat-num" id="your-refs">0</div>
+        <div class="your-stat-lbl">Referrals made</div>
+      </div>
+      <div class="your-stat">
+        <div class="your-stat-num" id="your-spots">0</div>
+        <div class="your-stat-lbl">Spots moved up</div>
+      </div>
+      <div class="your-ref-row">
+        <div class="your-ref-label">Your referral link</div>
+        <div class="your-ref-link-wrap">
+          <div class="your-ref-input" id="your-ref-input"></div>
+          <button class="btn-copy-sm" id="your-copy-btn" onclick="copyYourRef()">Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top 3 Podium -->
+  <div class="fade-up" style="margin-bottom:24px">
+    <div class="section-header">
+      <h2 class="section-title">🏅 Top Referrers</h2>
+      <div class="live-badge">
+        <div class="live-dot"></div>
+        Live Updates
+      </div>
+    </div>
+
+    <div class="podium" id="podium">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+
+  <!-- Full leaderboard table -->
+  <div class="fade-up stagger-1" style="margin-bottom:32px">
+    <div class="section-header" style="margin-bottom:12px">
+      <h3 class="section-title" style="font-size:16px">Ranks 4–10</h3>
+      <span style="font-size:12px;color:var(--text4)">Updated in real time</span>
+    </div>
+    <div class="lb-table" id="lb-table">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+
+  <!-- Milestones -->
+  <div class="fade-up stagger-2" style="margin-bottom:32px">
+    <h3 class="section-title" style="margin-bottom:14px">🎯 Referral Milestones</h3>
+    <div class="milestones">
+      <div class="milestone stagger-1 fade-up">
+        <span class="milestone-icon">🎯</span>
+        <div class="milestone-val">1 Referral</div>
+        <div class="milestone-desc">Move up 5 spots on the waitlist</div>
+        <span class="milestone-reward reward-g">+5 spots</span>
+      </div>
+      <div class="milestone stagger-2 fade-up">
+        <span class="milestone-icon">⭐</span>
+        <div class="milestone-val">5 Referrals</div>
+        <div class="milestone-desc">Reach Priority Access territory</div>
+        <span class="milestone-reward reward-y">Priority Access</span>
+      </div>
+      <div class="milestone stagger-3 fade-up">
+        <span class="milestone-icon">🏆</span>
+        <div class="milestone-val">Top 100</div>
+        <div class="milestone-desc">Day 1 access + 3 months of Pro free</div>
+        <span class="milestone-reward reward-p">3 Months Free</span>
+      </div>
+      <div class="milestone stagger-4 fade-up">
+        <span class="milestone-icon">👑</span>
+        <div class="milestone-val">#1 Spot</div>
+        <div class="milestone-desc">Lifetime Pro + founding member status</div>
+        <span class="milestone-reward reward-y">Lifetime Pro</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share CTA -->
+  <div class="share-cta fade-up stagger-5">
+    <div class="share-cta-title">Move up the leaderboard 🚀</div>
+    <p class="share-cta-sub">Share your unique referral link and climb the ranks. Every person who joins using your link moves you up 5 spots and gets you closer to 3 months of Pro free.</p>
+    <div class="share-btns" id="cta-share-btns">
+      <!-- Injected by JS based on whether user has joined -->
+      <button class="btn-cta" onclick="window.location.href='/'">Join the Waitlist First →</button>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<footer>
+  <div class="footer-links">
+    <a href="/">Waitlist</a>
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="mailto:hello@smartcrickai.com">Contact</a>
+  </div>
+  <span class="footer-copy">© 2025 SmartCrick AI</span>
+</footer>
+
+<script>
+const USE_API = false; // ← set true after deploying api/waitlist.js
+const API_PATH = '/api/waitlist';
+
+/* ── Demo leaderboard data ────────────────────────────────── */
+const DEMO_LEADERS = [
+  { name:'Rahul S.',    role:'Batsman',     country:'🇮🇳', referrals:42, color:'#f59e0b' },
+  { name:'James W.',   role:'All-Rounder',  country:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', referrals:38, color:'#3b82f6' },
+  { name:'Priya K.',   role:'Batsman',      country:'🇱🇰', referrals:31, color:'#ec4899' },
+  { name:'Kofi A.',    role:'Fast Bowler',  country:'🇬🇭', referrals:27, color:'#10b981' },
+  { name:'Tom H.',     role:'Wicket-Keeper',country:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', referrals:22, color:'#8b5cf6' },
+  { name:'Amir K.',    role:'Bowler',       country:'🇵🇰', referrals:19, color:'#f97316' },
+  { name:'Sarah M.',   role:'Batsman',      country:'🇿🇦', referrals:16, color:'#06b6d4' },
+  { name:'Dev N.',     role:'All-Rounder',  country:'🇳🇿', referrals:14, color:'#84cc16' },
+  { name:'Fatima R.',  role:'Bowler',       country:'🇧🇩', referrals:11, color:'#f43f5e' },
+  { name:'Chris B.',   role:'Batsman',      country:'🇯🇲', referrals:9,  color:'#a855f7' },
+];
+
+function initials(name) {
+  return name.split(' ').map(p => p[0]).join('').toUpperCase().slice(0,2);
+}
+
+/* ── Build podium ─────────────────────────────────────────── */
+function buildPodium(leaders) {
+  const top3 = leaders.slice(0,3);
+  const ranks = ['rank-1','rank-2','rank-3'];
+  const crowns = ['🥇','🥈','🥉'];
+  const rankLabels = ['1st Place','2nd Place','3rd Place'];
+  const podium = document.getElementById('podium');
+  const maxRefs = top3[0]?.referrals || 1;
+  podium.innerHTML = top3.map((p, i) => `
+    <div class="podium-card ${ranks[i]}">
+      <span class="podium-crown">${crowns[i]}</span>
+      <div class="podium-rank">${rankLabels[i]}</div>
+      <div class="podium-avatar" style="background:linear-gradient(135deg,${p.color}dd,${p.color})">${initials(p.name)}</div>
+      <div class="podium-name">${p.name} ${p.country}</div>
+      <div class="podium-referrals">
+        <strong>${p.referrals}</strong>
+        referral${p.referrals !== 1 ? 's' : ''}
+      </div>
+      <div class="podium-bar"></div>
+    </div>
+  `).join('');
+}
+
+/* ── Build table (ranks 4–10) ─────────────────────────────── */
+function buildTable(leaders, youCode) {
+  const rest = leaders.slice(3);
+  const maxRefs = leaders[0]?.referrals || 1;
+  const table = document.getElementById('lb-table');
+  const saved = loadState();
+
+  table.innerHTML = rest.map((p, i) => {
+    const rank = i + 4;
+    const isYou = saved && saved.refCode && p._isYou;
+    const rankClass = rank <= 3 ? `top${rank}` : '';
+    const pct = Math.round((p.referrals / maxRefs) * 100);
+    return `
+    <div class="lb-row ${isYou ? 'you-row' : ''}" style="animation-delay:${i * 0.06}s">
+      <div class="lb-rank ${rankClass}">#${rank}</div>
+      <div class="lb-person">
+        <div class="lb-avatar" style="background:linear-gradient(135deg,${p.color}dd,${p.color})">${initials(p.name)}</div>
+        <div class="lb-name-wrap">
+          <div class="lb-name">${p.name} ${p.country} ${isYou ? '<span class="lb-you-badge">You</span>' : ''}</div>
+          <div class="lb-sub">${p.role}</div>
+        </div>
+      </div>
+      <div>
+        <div class="lb-refs">${p.referrals}</div>
+        <span class="lb-refs-label">referrals</span>
+      </div>
+      <div class="lb-progress-wrap">
+        <div class="lb-progress-bar">
+          <div class="lb-progress-fill" style="width:0%;background:${p.color}" data-pct="${pct}"></div>
+        </div>
+        <span style="font-size:10px;color:var(--text4)">+${p.referrals * 5} spots moved</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Animate progress bars
+  setTimeout(() => {
+    document.querySelectorAll('.lb-progress-fill').forEach(el => {
+      el.style.width = el.dataset.pct + '%';
+    });
+  }, 200);
+}
+
+/* ── Load state ───────────────────────────────────────────── */
+function loadState() {
+  try { return JSON.parse(localStorage.getItem('sc_wl_v2') || 'null'); } catch { return null; }
+}
+
+/* ── Populate your card ───────────────────────────────────── */
+function populateYourCard(saved) {
+  if (!saved) return;
+  const card = document.getElementById('your-card');
+  card.classList.add('show');
+  document.getElementById('your-position-badge').textContent = '#' + saved.position.toLocaleString();
+  document.getElementById('your-refs').textContent = saved.referrals || 0;
+  document.getElementById('your-spots').textContent = (saved.referrals || 0) * 5;
+
+  const refUrl = new URL(window.location.origin + '/');
+  refUrl.searchParams.set('ref', saved.refCode);
+  document.getElementById('your-ref-input').textContent = refUrl.toString();
+  document.getElementById('your-ref-input').dataset.url = refUrl.toString();
+
+  // Update share CTA
+  const cta = document.getElementById('cta-share-btns');
+  cta.innerHTML = `
+    <button class="btn-wa" onclick="shareWa('${refUrl}')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.555 4.118 1.528 5.845L.057 23.857a.5.5 0 0 0 .585.643l6.265-1.643A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.374l-.358-.213-3.72.976.993-3.624-.234-.372A9.817 9.817 0 0 1 2.182 12C2.182 6.575 6.575 2.182 12 2.182S21.818 6.575 21.818 12 17.425 21.818 12 21.818z"/></svg>
+      Share on WhatsApp
+    </button>
+    <button class="btn-x" onclick="shareX('${refUrl}')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.73-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      Post on X
+    </button>
+    <button class="btn-cta" onclick="copyRef('${refUrl}')">📋 Copy Your Link</button>
+  `;
+}
+
+/* ── Fetch live data ──────────────────────────────────────── */
+async function fetchLeaderboard() {
+  if (!USE_API) return null;
+  try {
+    const r = await fetch(API_PATH + '?leaderboard=true');
+    if (r.ok) return await r.json();
+  } catch {}
+  return null;
+}
+
+/* ── Counter animation ────────────────────────────────────── */
+function animCount(el, to, dur = 1200) {
+  if (!el) return;
+  const from = Math.max(to - 100, 0);
+  const start = performance.now();
+  const step = now => {
+    const t = Math.min((now - start) / dur, 1);
+    const ease = 1 - Math.pow(1-t, 3);
+    el.textContent = Math.round(from + (to - from) * ease).toLocaleString();
+    if (t < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+/* ── Share functions ──────────────────────────────────────── */
+function shareWa(url) {
+  const msg = `I'm on the SmartCrick AI waitlist 🏏 — join me for early access!\n\n${url}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+}
+function shareX(url) {
+  const msg = `On the SmartCrick AI waitlist 🏏\n\nAI cricket training — drills, mental coaching, Cricket DNA, video analysis.\n\nJoin here → ${url}\n\n#cricket #SmartCrick`;
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(msg)}`, '_blank');
+}
+function copyRef(url) {
+  navigator.clipboard.writeText(url || '').then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => { btn.textContent = orig; }, 2500);
+  });
+}
+function copyYourRef() {
+  const el = document.getElementById('your-ref-input');
+  const url = el?.dataset?.url || el?.textContent || '';
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById('your-copy-btn');
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2500);
+  });
+}
+
+/* ── FAQ accordion (reused) ───────────────────────────────── */
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const open = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+  if (!open) item.classList.add('open');
+}
+
+/* ── Init ─────────────────────────────────────────────────── */
+async function init() {
+  const saved = loadState();
+  let leaders = DEMO_LEADERS;
+
+  // Try API
+  const apiData = await fetchLeaderboard();
+  if (apiData?.topReferrers?.length) {
+    leaders = apiData.topReferrers;
+    if (apiData.count) animCount(document.getElementById('stat-total'), apiData.count);
+    const totalRefs = leaders.reduce((s, p) => s + (p.referrals || 0), 0);
+    animCount(document.getElementById('stat-referrals'), totalRefs);
+  } else {
+    // Animate demo stats
+    animCount(document.getElementById('stat-total'), 3247);
+    animCount(document.getElementById('stat-referrals'), 842);
+  }
+
+  buildPodium(leaders);
+  buildTable(leaders, saved?.refCode);
+
+  if (saved) populateYourCard(saved);
+
+  // Intersection observer
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+
+  // Poll every 30s
+  setInterval(async () => {
+    const data = await fetchLeaderboard();
+    if (data?.topReferrers?.length) {
+      buildPodium(data.topReferrers);
+      buildTable(data.topReferrers, saved?.refCode);
+    }
+  }, 30000);
+}
+
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
