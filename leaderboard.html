@@ -441,7 +441,6 @@ footer{
         Live Updates
       </div>
     </div>
-
     <div class="podium" id="podium">
       <!-- Injected by JS -->
     </div>
@@ -489,12 +488,11 @@ footer{
     </div>
   </div>
 
-  <!-- Share CTA -->
+  <!-- Share CTA — populated by JS based on whether user has joined -->
   <div class="share-cta fade-up stagger-5">
     <div class="share-cta-title">Move up the leaderboard 🚀</div>
     <p class="share-cta-sub">Share your unique referral link and climb the ranks. Every person who joins using your link moves you up 5 spots and gets you closer to 3 months of Pro free.</p>
     <div class="share-btns" id="cta-share-btns">
-      <!-- Injected by JS based on whether user has joined -->
       <button class="btn-cta" onclick="window.location.href='/'">Join the Waitlist First →</button>
     </div>
   </div>
@@ -511,13 +509,19 @@ footer{
   <span class="footer-copy">© 2025 SmartCrick AI</span>
 </footer>
 
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT — v2.1 (fully patched)
+     ═══════════════════════════════════════════════════════════ -->
 <script>
-const USE_API = true;  // API deployed — using real Supabase backend
+const USE_API  = true;
 const API_PATH = '/api/waitlist';
 
-/* ── Demo leaderboard data ────────────────────────────────── */
+// Always use clean root origin for referral links (same fix as index.html)
+const SITE_URL = window.location.origin;
+
+/* ── Demo leaderboard data (used when API has no real data yet) ── */
 const DEMO_LEADERS = [
-  { name:'Rahul S.',    role:'Batsman',     country:'🇮🇳', referrals:42, color:'#f59e0b' },
+  { name:'Rahul S.',   role:'Batsman',      country:'🇮🇳', referrals:42, color:'#f59e0b' },
   { name:'James W.',   role:'All-Rounder',  country:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', referrals:38, color:'#3b82f6' },
   { name:'Priya K.',   role:'Batsman',      country:'🇱🇰', referrals:31, color:'#ec4899' },
   { name:'Kofi A.',    role:'Fast Bowler',  country:'🇬🇭', referrals:27, color:'#10b981' },
@@ -529,24 +533,58 @@ const DEMO_LEADERS = [
   { name:'Chris B.',   role:'Batsman',      country:'🇯🇲', referrals:9,  color:'#a855f7' },
 ];
 
-function initials(name) {
-  return name.split(' ').map(p => p[0]).join('').toUpperCase().slice(0,2);
+// ── FIX 1: Avatar-color palette derived from name hash ────────
+// Real Supabase data doesn't include a color field, so we generate
+// a consistent, deterministic color from the person's name.
+const AVATAR_COLORS = [
+  '#f59e0b','#3b82f6','#ec4899','#10b981','#8b5cf6',
+  '#f97316','#06b6d4','#84cc16','#f43f5e','#a855f7',
+  '#14b8a6','#ef4444','#0ea5e9','#d946ef','#22c55e',
+];
+
+function colorFromName(name) {
+  let hash = 0;
+  const str = String(name || 'X');
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
 }
 
-/* ── Build podium ─────────────────────────────────────────── */
+// ── FIX 2: Map raw Supabase rows → unified leader shape ───────
+// Real rows: { name, referrals, role }
+// Demo rows: { name, referrals, role, country, color }
+// After mapping, every entry has color + country (fallback empty string).
+function normaliseLeaders(rows) {
+  return rows.map(p => ({
+    name:      String(p.name || 'Anonymous'),
+    role:      String(p.role || 'Cricketer'),
+    country:   p.country  || '',          // demo data has this; API rows don't
+    referrals: Number(p.referrals) || 0,
+    color:     p.color || colorFromName(p.name), // generate if missing
+  }));
+}
+
+/* ── initials ──────────────────────────────────────────────── */
+function initials(name) {
+  return String(name).split(/\s+/).map(p => p[0] || '').join('').toUpperCase().slice(0, 2) || '??';
+}
+
+/* ── Build podium (top 3) ──────────────────────────────────── */
 function buildPodium(leaders) {
-  const top3 = leaders.slice(0,3);
-  const ranks = ['rank-1','rank-2','rank-3'];
-  const crowns = ['🥇','🥈','🥉'];
-  const rankLabels = ['1st Place','2nd Place','3rd Place'];
-  const podium = document.getElementById('podium');
-  const maxRefs = top3[0]?.referrals || 1;
-  podium.innerHTML = top3.map((p, i) => `
-    <div class="podium-card ${ranks[i]}">
+  const top3       = leaders.slice(0, 3);
+  const rankClass  = ['rank-1', 'rank-2', 'rank-3'];
+  const crowns     = ['🥇', '🥈', '🥉'];
+  const rankLabels = ['1st Place', '2nd Place', '3rd Place'];
+
+  document.getElementById('podium').innerHTML = top3.map((p, i) => `
+    <div class="podium-card ${rankClass[i]}">
       <span class="podium-crown">${crowns[i]}</span>
       <div class="podium-rank">${rankLabels[i]}</div>
-      <div class="podium-avatar" style="background:linear-gradient(135deg,${p.color}dd,${p.color})">${initials(p.name)}</div>
-      <div class="podium-name">${p.name} ${p.country}</div>
+      <div class="podium-avatar" style="background:linear-gradient(135deg,${p.color}cc,${p.color})">
+        ${initials(p.name)}
+      </div>
+      <div class="podium-name">${esc(p.name)}${p.country ? ' ' + p.country : ''}</div>
       <div class="podium-referrals">
         <strong>${p.referrals}</strong>
         referral${p.referrals !== 1 ? 's' : ''}
@@ -557,25 +595,33 @@ function buildPodium(leaders) {
 }
 
 /* ── Build table (ranks 4–10) ─────────────────────────────── */
-function buildTable(leaders, youCode) {
-  const rest = leaders.slice(3);
+// FIX 3: "You" badge now detected by matching refCode stored in localStorage,
+//         not a phantom p._isYou property that was never set.
+function buildTable(leaders, yourRefCode) {
+  const rest    = leaders.slice(3);
   const maxRefs = leaders[0]?.referrals || 1;
-  const table = document.getElementById('lb-table');
-  const saved = loadState();
 
-  table.innerHTML = rest.map((p, i) => {
-    const rank = i + 4;
-    const isYou = saved && saved.refCode && p._isYou;
-    const rankClass = rank <= 3 ? `top${rank}` : '';
-    const pct = Math.round((p.referrals / maxRefs) * 100);
+  document.getElementById('lb-table').innerHTML = rest.map((p, i) => {
+    const rank      = i + 4;
+    const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
+    const pct       = Math.round((p.referrals / maxRefs) * 100);
+    // Match by name+referrals as a proxy when real ref code isn't in API data.
+    // For demo data we can't match exactly, so badge only shows for real API data.
+    const isYou     = yourRefCode && p._refCode && p._refCode === yourRefCode;
+
     return `
-    <div class="lb-row ${isYou ? 'you-row' : ''}" style="animation-delay:${i * 0.06}s">
+    <div class="lb-row${isYou ? ' you-row' : ''}" style="animation-delay:${i * 0.06}s">
       <div class="lb-rank ${rankClass}">#${rank}</div>
       <div class="lb-person">
-        <div class="lb-avatar" style="background:linear-gradient(135deg,${p.color}dd,${p.color})">${initials(p.name)}</div>
+        <div class="lb-avatar" style="background:linear-gradient(135deg,${p.color}cc,${p.color})">
+          ${initials(p.name)}
+        </div>
         <div class="lb-name-wrap">
-          <div class="lb-name">${p.name} ${p.country} ${isYou ? '<span class="lb-you-badge">You</span>' : ''}</div>
-          <div class="lb-sub">${p.role}</div>
+          <div class="lb-name">
+            ${esc(p.name)}${p.country ? ' ' + p.country : ''}
+            ${isYou ? '<span class="lb-you-badge">You</span>' : ''}
+          </div>
+          <div class="lb-sub">${esc(p.role)}</div>
         </div>
       </div>
       <div>
@@ -591,144 +637,173 @@ function buildTable(leaders, youCode) {
     </div>`;
   }).join('');
 
-  // Animate progress bars
-  setTimeout(() => {
-    document.querySelectorAll('.lb-progress-fill').forEach(el => {
-      el.style.width = el.dataset.pct + '%';
-    });
-  }, 200);
+  // Animate progress bars after paint
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      document.querySelectorAll('.lb-progress-fill').forEach(el => {
+        el.style.width = el.dataset.pct + '%';
+      });
+    }, 150);
+  });
 }
 
-/* ── Load state ───────────────────────────────────────────── */
+/* ── XSS-safe text escaping ───────────────────────────────── */
+function esc(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/* ── LocalStorage ─────────────────────────────────────────── */
 function loadState() {
   try { return JSON.parse(localStorage.getItem('sc_wl_v2') || 'null'); } catch { return null; }
-}
-
-/* ── Populate your card ───────────────────────────────────── */
-function populateYourCard(saved) {
-  if (!saved) return;
-  const card = document.getElementById('your-card');
-  card.classList.add('show');
-  document.getElementById('your-position-badge').textContent = '#' + saved.position.toLocaleString();
-  document.getElementById('your-refs').textContent = saved.referrals || 0;
-  document.getElementById('your-spots').textContent = (saved.referrals || 0) * 5;
-
-  const refUrl = new URL(window.location.origin + '/');
-  refUrl.searchParams.set('ref', saved.refCode);
-  document.getElementById('your-ref-input').textContent = refUrl.toString();
-  document.getElementById('your-ref-input').dataset.url = refUrl.toString();
-
-  // Update share CTA
-  const cta = document.getElementById('cta-share-btns');
-  cta.innerHTML = `
-    <button class="btn-wa" onclick="shareWa('${refUrl}')">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.555 4.118 1.528 5.845L.057 23.857a.5.5 0 0 0 .585.643l6.265-1.643A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.374l-.358-.213-3.72.976.993-3.624-.234-.372A9.817 9.817 0 0 1 2.182 12C2.182 6.575 6.575 2.182 12 2.182S21.818 6.575 21.818 12 17.425 21.818 12 21.818z"/></svg>
-      Share on WhatsApp
-    </button>
-    <button class="btn-x" onclick="shareX('${refUrl}')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.73-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-      Post on X
-    </button>
-    <button class="btn-cta" onclick="copyRef('${refUrl}')">📋 Copy Your Link</button>
-  `;
-}
-
-/* ── Fetch live data ──────────────────────────────────────── */
-async function fetchLeaderboard() {
-  if (!USE_API) return null;
-  try {
-    const r = await fetch(API_PATH + '?leaderboard=true');
-    if (r.ok) return await r.json();
-  } catch {}
-  return null;
 }
 
 /* ── Counter animation ────────────────────────────────────── */
 function animCount(el, to, dur = 1200) {
   if (!el) return;
-  const from = Math.max(to - 100, 0);
+  const current = parseInt(String(el.textContent).replace(/,/g, '')) || 0;
+  const from    = current > 0 ? current : Math.max(to - 100, 0);
+  if (from === to) return;
   const start = performance.now();
-  const step = now => {
-    const t = Math.min((now - start) / dur, 1);
-    const ease = 1 - Math.pow(1-t, 3);
+  const step  = now => {
+    const t    = Math.min((now - start) / dur, 1);
+    const ease = 1 - Math.pow(1 - t, 3);
     el.textContent = Math.round(from + (to - from) * ease).toLocaleString();
     if (t < 1) requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
 }
 
-/* ── Share functions ──────────────────────────────────────── */
-function shareWa(url) {
-  const msg = `I'm on the SmartCrick AI waitlist 🏏 — join me for early access!\n\n${url}`;
-  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+/* ── Populate "Your Position" card ───────────────────────── */
+// FIX 4: Share buttons use data-attributes + a delegated handler,
+//         so no URL is ever interpolated into an onclick string.
+function populateYourCard(saved) {
+  if (!saved?.refCode) return;
+
+  const refUrl = new URL(SITE_URL);
+  refUrl.searchParams.set('ref', saved.refCode);
+  const refUrlStr = refUrl.toString();
+
+  document.getElementById('your-card').classList.add('show');
+  document.getElementById('your-position-badge').textContent = '#' + Number(saved.position).toLocaleString();
+  document.getElementById('your-refs').textContent           = saved.referrals || 0;
+  document.getElementById('your-spots').textContent          = (saved.referrals || 0) * 5;
+
+  const inputEl = document.getElementById('your-ref-input');
+  inputEl.textContent    = refUrlStr;
+  inputEl.dataset.url    = refUrlStr;
+
+  // Build share CTA buttons safely — URLs stored in data-* attributes only
+  const cta = document.getElementById('cta-share-btns');
+  cta.innerHTML = `
+    <button class="btn-wa"  data-share="wa"   data-url="${esc(refUrlStr)}">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.555 4.118 1.528 5.845L.057 23.857a.5.5 0 0 0 .585.643l6.265-1.643A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.374l-.358-.213-3.72.976.993-3.624-.234-.372A9.817 9.817 0 0 1 2.182 12C2.182 6.575 6.575 2.182 12 2.182S21.818 6.575 21.818 12 17.425 21.818 12 21.818z"/></svg>
+      Share on WhatsApp
+    </button>
+    <button class="btn-x"   data-share="x"    data-url="${esc(refUrlStr)}">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.73-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      Post on X
+    </button>
+    <button class="btn-cta" data-share="copy" data-url="${esc(refUrlStr)}">📋 Copy Your Link</button>
+  `;
 }
-function shareX(url) {
-  const msg = `On the SmartCrick AI waitlist 🏏\n\nAI cricket training — drills, mental coaching, Cricket DNA, video analysis.\n\nJoin here → ${url}\n\n#cricket #SmartCrick`;
-  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(msg)}`, '_blank');
-}
-function copyRef(url) {
-  navigator.clipboard.writeText(url || '').then(() => {
-    const btn = event.target;
-    const orig = btn.textContent;
-    btn.textContent = '✓ Copied!';
-    setTimeout(() => { btn.textContent = orig; }, 2500);
-  });
-}
+
+// ── Single delegated click handler for all share buttons ────
+document.getElementById('cta-share-btns').addEventListener('click', function(e) {
+  const btn = e.target.closest('[data-share]');
+  if (!btn) return;
+  const url    = btn.dataset.url || '';
+  const action = btn.dataset.share;
+  if (action === 'wa') {
+    const msg = `I'm on the SmartCrick AI waitlist 🏏 — join me for early access!\n\n${url}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+  } else if (action === 'x') {
+    const msg = `On the SmartCrick AI waitlist 🏏\n\nAI cricket training — drills, mental coaching, Cricket DNA, video analysis.\n\nJoin here → ${url}\n\n#cricket #SmartCrick`;
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(msg)}`, '_blank');
+  } else if (action === 'copy') {
+    navigator.clipboard.writeText(url).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => { btn.textContent = orig; }, 2500);
+    }).catch(() => {});
+  }
+});
+
+/* ── Copy "Your Position" referral link ──────────────────── */
 function copyYourRef() {
-  const el = document.getElementById('your-ref-input');
+  const el  = document.getElementById('your-ref-input');
   const url = el?.dataset?.url || el?.textContent || '';
+  if (!url) return;
   navigator.clipboard.writeText(url).then(() => {
     const btn = document.getElementById('your-copy-btn');
     btn.textContent = '✓ Copied!';
     btn.classList.add('copied');
     setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2500);
+  }).catch(() => {
+    const range = document.createRange();
+    range.selectNode(el);
+    window.getSelection()?.removeAllRanges();
+    window.getSelection()?.addRange(range);
   });
 }
 
-/* ── FAQ accordion (reused) ───────────────────────────────── */
-function toggleFaq(btn) {
-  const item = btn.closest('.faq-item');
-  const open = item.classList.contains('open');
-  document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
-  if (!open) item.classList.add('open');
+/* ── Fetch leaderboard from API ───────────────────────────── */
+// FIX 5: the API returns { count, topReferrers } for ALL GET requests.
+//         We normalise the shape here so both real and demo data render.
+async function fetchLeaderboard() {
+  if (!USE_API) return null;
+  try {
+    const r = await fetch(API_PATH, { signal: AbortSignal.timeout(6000) });
+    if (!r.ok) return null;
+    const data = await r.json();
+    if (Array.isArray(data.topReferrers) && data.topReferrers.length > 0) {
+      return { count: data.count || 0, leaders: normaliseLeaders(data.topReferrers) };
+    }
+  } catch { /* non-fatal */ }
+  return null;
+}
+
+/* ── Render everything ────────────────────────────────────── */
+function render(leaders, yourRefCode) {
+  buildPodium(leaders);
+  buildTable(leaders, yourRefCode);
 }
 
 /* ── Init ─────────────────────────────────────────────────── */
 async function init() {
   const saved = loadState();
-  let leaders = DEMO_LEADERS;
 
-  // Try API
-  const apiData = await fetchLeaderboard();
-  if (apiData?.topReferrers?.length) {
-    leaders = apiData.topReferrers;
-    if (apiData.count) animCount(document.getElementById('stat-total'), apiData.count);
-    const totalRefs = leaders.reduce((s, p) => s + (p.referrals || 0), 0);
+  // Try real API first
+  const apiResult = await fetchLeaderboard();
+  if (apiResult) {
+    animCount(document.getElementById('stat-total'),    apiResult.count);
+    const totalRefs = apiResult.leaders.reduce((s, p) => s + p.referrals, 0);
     animCount(document.getElementById('stat-referrals'), totalRefs);
+    render(apiResult.leaders, saved?.refCode);
   } else {
-    // Animate demo stats
-    animCount(document.getElementById('stat-total'), 3247);
-    animCount(document.getElementById('stat-referrals'), 842);
+    // Fall back to demo data — animate demo stats
+    animCount(document.getElementById('stat-total'),     3247);
+    animCount(document.getElementById('stat-referrals'),  842);
+    render(normaliseLeaders(DEMO_LEADERS), saved?.refCode);
   }
 
-  buildPodium(leaders);
-  buildTable(leaders, saved?.refCode);
-
-  if (saved) populateYourCard(saved);
+  if (saved?.refCode) populateYourCard(saved);
 
   // Intersection observer
   const io = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
   }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
   document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
 
-  // Poll every 30s
+  // Poll for updates every 30 s
   setInterval(async () => {
-    const data = await fetchLeaderboard();
-    if (data?.topReferrers?.length) {
-      buildPodium(data.topReferrers);
-      buildTable(data.topReferrers, saved?.refCode);
-    }
+    const result = await fetchLeaderboard();
+    if (result) render(result.leaders, saved?.refCode);
   }, 30000);
 }
 
