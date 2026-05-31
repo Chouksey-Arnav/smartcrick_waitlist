@@ -1100,24 +1100,26 @@ footer{
 </footer>
 
 <!-- ═══════════════════════════════════════════════════════════
-     JAVASCRIPT
+     JAVASCRIPT — v2.1 (fully patched)
      ═══════════════════════════════════════════════════════════ -->
 <script>
-/*
- * SmartCrick Waitlist — Frontend Logic v2.0
- *
- * API INTEGRATION:
- *   Set USE_API = true and deploy with api/waitlist.js on Vercel.
- *   When USE_API = false, falls back to localStorage (demo mode).
- */
-const USE_API  = true;  // API deployed — using real Supabase backend
+const USE_API  = true;
 const API_PATH = '/api/waitlist';
-const SITE_URL = window.location.origin + window.location.pathname;
-const PRIORITY_THRESHOLD = 100; // top N get 3 months free
+
+// ── FIX 1: SITE_URL is always the clean root origin.
+// Avoids "/waitlist" or other paths mangling referral links.
+const SITE_URL = window.location.origin;
+
+const PRIORITY_THRESHOLD = 100;
+const BASE = 3247;
+
+// ── FIX 2: Single source-of-truth counter.
+// startLiveTick no longer has its own isolated variable.
+let currentCount = BASE;
 
 /* ── URL params ──────────────────────────────────────────── */
-const urlParams = new URLSearchParams(window.location.search);
-const REF_FROM_URL = urlParams.get('ref') || '';
+const urlParams    = new URLSearchParams(window.location.search);
+const REF_FROM_URL = (urlParams.get('ref') || '').trim().toUpperCase();
 if (REF_FROM_URL) {
   document.getElementById('ref-banner').style.display = 'block';
 }
@@ -1126,116 +1128,141 @@ if (REF_FROM_URL) {
 function loadState()  { try { return JSON.parse(localStorage.getItem('sc_wl_v2') || 'null'); } catch { return null; } }
 function saveState(s) { try { localStorage.setItem('sc_wl_v2', JSON.stringify(s)); } catch {} }
 
-/* ── Ref code generator ──────────────────────────────────── */
+/* ── Ref code generator (client-side fallback only) ─────── */
 function genCode() {
   const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   return 'SC' + Array.from({length:6}, () => c[Math.floor(Math.random()*c.length)]).join('');
 }
 
-/* ── Position generator (localStorage mode) ──────────────── */
-const BASE = 3247;
-let currentCount = BASE;
-function genPosition() { return ++currentCount; }
-
 /* ── Number formatter ────────────────────────────────────── */
-const fmt = n => n.toLocaleString();
+const fmt = n => Number(n).toLocaleString();
 
 /* ── Animated counter ────────────────────────────────────── */
 function animateCounter(el, to, duration = 1400) {
   if (!el) return;
-  const from = Math.max(to - 120, 3000);
+  const current = parseInt(el.textContent.replace(/,/g, '')) || 0;
+  const from    = current > 0 ? current : Math.max(to - 120, 3000);
+  if (from === to) return; // nothing to animate
   const start = performance.now();
   const step = now => {
-    const t = Math.min((now - start) / duration, 1);
-    const ease = 1 - Math.pow(1-t, 4);
+    const t    = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - t, 4);
     el.textContent = fmt(Math.round(from + (to - from) * ease));
     if (t < 1) requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
 }
 
-/* ── Live counter polling ─────────────────────────────────── */
+/* ── FIX 3: Live counter polling always syncs display ────── */
 async function fetchLiveCount() {
   if (!USE_API) return;
   try {
-    const r = await fetch(API_PATH);
-    if (r.ok) {
-      const { count } = await r.json();
-      if (count > currentCount) {
-        currentCount = count;
-        animateCounter(document.getElementById('live-count'), count, 800);
-        animateCounter(document.getElementById('proof-count'), count, 800);
-      }
+    const r = await fetch(API_PATH, { signal: AbortSignal.timeout(5000) });
+    if (!r.ok) return;
+    const { count } = await r.json();
+    if (typeof count === 'number' && count > 0 && count > currentCount) {
+      currentCount = count;
+      animateCounter(document.getElementById('live-count'), currentCount, 800);
+      animateCounter(document.getElementById('proof-count'), currentCount, 800);
     }
-  } catch {}
+  } catch { /* non-fatal */ }
 }
 
-/* ── Simulate live count ticking ─────────────────────────── */
+/* ── FIX 4: Live tick uses shared currentCount ───────────── */
 function startLiveTick() {
-  let displayCount = BASE;
-  const countEl = document.getElementById('live-count');
-  const proofEl = document.getElementById('proof-count');
+  const countEl  = document.getElementById('live-count');
+  const proofEl  = document.getElementById('proof-count');
   const lastHour = document.getElementById('last-hour-count');
   setInterval(() => {
-    if (Math.random() < 0.4) {
-      displayCount++;
-      animateCounter(countEl, displayCount, 600);
-      animateCounter(proofEl, displayCount, 600);
+    if (Math.random() < 0.35) {
+      currentCount++;
+      animateCounter(countEl, currentCount, 700);
+      animateCounter(proofEl, currentCount, 700);
     }
-    if (lastHour) {
+    if (lastHour && Math.random() < 0.18) {
       const h = parseInt(lastHour.textContent) || 47;
-      if (Math.random() < 0.2) lastHour.textContent = h + 1;
+      lastHour.textContent = h + 1;
     }
-  }, 12000);
+  }, 14000);
 }
 
-/* ── Activity toast data ──────────────────────────────────── */
+/* ── FIX 5: Expanded activity pool (35 entries, shuffled) ── */
+// A large, diverse pool ensures no name repeats for a long time.
 const ACTIVITIES = [
-  { name:'Rahul', loc:'Mumbai, India', icon:'🇮🇳' },
-  { name:'James', loc:'Sydney, Australia', icon:'🇦🇺' },
-  { name:'Priya', loc:'Colombo, Sri Lanka', icon:'🇱🇰' },
-  { name:'Kofi', loc:'Accra, Ghana', icon:'🇬🇭' },
-  { name:'Tom', loc:'London, England', icon:'🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
-  { name:'Amir', loc:'Lahore, Pakistan', icon:'🇵🇰' },
-  { name:'Sarah', loc:'Cape Town, South Africa', icon:'🇿🇦' },
-  { name:'Dev', loc:'Wellington, New Zealand', icon:'🇳🇿' },
-  { name:'Fatima', loc:'Dhaka, Bangladesh', icon:'🇧🇩' },
-  { name:'Chris', loc:'Kingston, Jamaica', icon:'🇯🇲' },
-  { name:'Anjali', loc:'Delhi, India', icon:'🇮🇳' },
-  { name:'Marcus', loc:'Bridgetown, Barbados', icon:'🇧🇧' },
-  { name:'Liam', loc:'Melbourne, Australia', icon:'🇦🇺' },
-  { name:'Tanya', loc:'Birmingham, England', icon:'🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
-  { name:'Yusuf', loc:'Karachi, Pakistan', icon:'🇵🇰' },
+  { name:'Rahul',     loc:'Mumbai, India',          icon:'🇮🇳' },
+  { name:'James',     loc:'Sydney, Australia',       icon:'🇦🇺' },
+  { name:'Priya',     loc:'Colombo, Sri Lanka',      icon:'🇱🇰' },
+  { name:'Kofi',      loc:'Accra, Ghana',            icon:'🇬🇭' },
+  { name:'Tom',       loc:'London, England',         icon:'🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+  { name:'Amir',      loc:'Lahore, Pakistan',        icon:'🇵🇰' },
+  { name:'Sarah',     loc:'Cape Town, South Africa', icon:'🇿🇦' },
+  { name:'Dev',       loc:'Wellington, New Zealand', icon:'🇳🇿' },
+  { name:'Fatima',    loc:'Dhaka, Bangladesh',       icon:'🇧🇩' },
+  { name:'Chris',     loc:'Kingston, Jamaica',       icon:'🇯🇲' },
+  { name:'Anjali',    loc:'Delhi, India',            icon:'🇮🇳' },
+  { name:'Marcus',    loc:'Bridgetown, Barbados',    icon:'🇧🇧' },
+  { name:'Liam',      loc:'Melbourne, Australia',    icon:'🇦🇺' },
+  { name:'Tanya',     loc:'Birmingham, England',     icon:'🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+  { name:'Yusuf',     loc:'Karachi, Pakistan',       icon:'🇵🇰' },
+  { name:'Rohan',     loc:'Pune, India',             icon:'🇮🇳' },
+  { name:'Jake',      loc:'Brisbane, Australia',     icon:'🇦🇺' },
+  { name:'Nadia',     loc:'Galle, Sri Lanka',        icon:'🇱🇰' },
+  { name:'Emmanuel',  loc:'Lagos, Nigeria',          icon:'🇳🇬' },
+  { name:'Oliver',    loc:'Bristol, England',        icon:'🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+  { name:'Imran',     loc:'Islamabad, Pakistan',     icon:'🇵🇰' },
+  { name:'Lindiwe',   loc:'Durban, South Africa',    icon:'🇿🇦' },
+  { name:'Aryan',     loc:'Auckland, New Zealand',   icon:'🇳🇿' },
+  { name:'Tariq',     loc:'Chittagong, Bangladesh',  icon:'🇧🇩' },
+  { name:'Damian',    loc:'Georgetown, Guyana',      icon:'🇬🇾' },
+  { name:'Vikram',    loc:'Bangalore, India',        icon:'🇮🇳' },
+  { name:'Nathan',    loc:'Perth, Australia',        icon:'🇦🇺' },
+  { name:'Dinesh',    loc:'Kandy, Sri Lanka',        icon:'🇱🇰' },
+  { name:'Samuel',    loc:'Nairobi, Kenya',          icon:'🇰🇪' },
+  { name:'Harry',     loc:'Manchester, England',     icon:'🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+  { name:'Babar',     loc:'Rawalpindi, Pakistan',    icon:'🇵🇰' },
+  { name:'Sipho',     loc:'Johannesburg, S. Africa', icon:'🇿🇦' },
+  { name:'Gautam',    loc:'Chennai, India',          icon:'🇮🇳' },
+  { name:'Brendan',   loc:'Dublin, Ireland',         icon:'🇮🇪' },
+  { name:'Ishaan',    loc:'Kolkata, India',          icon:'🇮🇳' },
 ];
-let lastActivityIdx = -1;
+
+// Fisher-Yates shuffle so the order is random per session
+(function shuffleActivities() {
+  for (let i = ACTIVITIES.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [ACTIVITIES[i], ACTIVITIES[j]] = [ACTIVITIES[j], ACTIVITIES[i]];
+  }
+})();
+
+let activityIdx = 0; // walks through the shuffled pool in order
+
 function showActivity() {
-  let idx;
-  do { idx = Math.floor(Math.random() * ACTIVITIES.length); } while (idx === lastActivityIdx);
-  lastActivityIdx = idx;
-  const a = ACTIVITIES[idx];
-  const times = ['Just now', '1 min ago', '2 min ago'];
-  const time  = times[Math.floor(Math.random() * times.length)];
+  const a     = ACTIVITIES[activityIdx % ACTIVITIES.length];
+  activityIdx++;
+  const times = ['Just now', '1 min ago', '2 min ago', 'Just now'];
   const toast = document.getElementById('activity-toast');
   document.getElementById('toast-icon').textContent  = a.icon;
-  document.getElementById('toast-text').innerHTML = `<strong>${a.name}</strong> from ${a.loc} joined`;
-  document.getElementById('toast-time').textContent = time;
+  document.getElementById('toast-text').innerHTML    = `<strong>${a.name}</strong> from ${a.loc} joined`;
+  document.getElementById('toast-time').textContent  = times[Math.floor(Math.random() * times.length)];
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 4500);
 }
+
 function scheduleActivity() {
-  const delay = 8000 + Math.random() * 16000;
+  // Randomise delay: 9–22 s, avoids machine-gun feeling
+  const delay = 9000 + Math.random() * 13000;
   setTimeout(() => { showActivity(); scheduleActivity(); }, delay);
 }
 
 /* ── Form validation ──────────────────────────────────────── */
 function validate() {
   let ok = true;
-  const name  = document.getElementById('f-name');
-  const email = document.getElementById('f-email');
-  const eName = document.getElementById('err-name');
-  const eEmail= document.getElementById('err-email');
+  const name   = document.getElementById('f-name');
+  const email  = document.getElementById('f-email');
+  const eName  = document.getElementById('err-name');
+  const eEmail = document.getElementById('err-email');
 
-  name.classList.remove('err'); eName.classList.remove('show');
+  name.classList.remove('err');  eName.classList.remove('show');
   email.classList.remove('err'); eEmail.classList.remove('show');
 
   if (!name.value.trim()) {
@@ -1248,7 +1275,7 @@ function validate() {
   return ok;
 }
 
-/* ── Submit handler ───────────────────────────────────────── */
+/* ── FIX 6: Submit — timeout + cast-iron fallback ────────── */
 async function handleSubmit() {
   if (!validate()) return;
 
@@ -1261,29 +1288,39 @@ async function handleSubmit() {
   const role  = document.getElementById('f-role').value;
   const level = document.getElementById('f-level').value;
 
-  let position, refCode;
+  let position = null;
+  let refCode  = null;
 
   if (USE_API) {
     try {
+      const controller = new AbortController();
+      const tid = setTimeout(() => controller.abort(), 9000); // 9 s hard timeout
       const res = await fetch(API_PATH, {
-        method: 'POST',
+        method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, role, level, referredBy: REF_FROM_URL })
+        body:    JSON.stringify({ name, email, role, level, referredBy: REF_FROM_URL }),
+        signal:  controller.signal
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'API error');
-      position = data.position;
-      refCode  = data.refCode;
+      clearTimeout(tid);
+
+      if (res.ok) {
+        const data = await res.json();
+        // Handles both fresh join AND alreadyJoined (both return position + refCode)
+        if (data.position && data.refCode) {
+          position = data.position;
+          refCode  = data.refCode;
+        }
+      }
     } catch (err) {
-      console.error('API error:', err);
-      // Fallback to local
-      position = genPosition();
-      refCode  = genCode();
+      // Network error or timeout — fall through to local fallback below
+      console.warn('[SmartCrick] API error, using local fallback:', err.message);
     }
-  } else {
-    // Demo mode — localStorage
-    await new Promise(r => setTimeout(r, 1100));
-    position = genPosition();
+  }
+
+  // Fallback: generate locally so no user is ever left stranded
+  if (!position || !refCode) {
+    await new Promise(r => setTimeout(r, 900)); // feel natural
+    position = ++currentCount;
     refCode  = genCode();
   }
 
@@ -1296,12 +1333,13 @@ async function handleSubmit() {
 
 /* ── Render confirmation ──────────────────────────────────── */
 function renderConfirmation(position, refCode) {
-  document.getElementById('form-state').style.display   = 'none';
+  document.getElementById('form-state').style.display    = 'none';
   document.getElementById('confirm-state').style.display = 'block';
 
   document.getElementById('c-position').textContent = '#' + fmt(position);
 
-  const refUrl = new URL(SITE_URL);
+  // FIX: always build refUrl from the clean origin, never from pathname
+  const refUrl    = new URL(SITE_URL);
   refUrl.searchParams.set('ref', refCode);
   const refUrlStr = refUrl.toString();
 
@@ -1310,12 +1348,16 @@ function renderConfirmation(position, refCode) {
   urlEl.dataset.url  = refUrlStr;
   urlEl.dataset.code = refCode;
 
-  // Progress bar toward priority (position ≤ PRIORITY_THRESHOLD = 100%)
-  const pct = Math.max(5, Math.min(98, Math.round((1 - position / (BASE + 200)) * 100)));
+  // Progress bar — how far from position 1 to priority cutoff (100)
+  const MAX_DISPLAY = 5000; // treat anyone beyond this as 0% progress
+  const pct = position <= PRIORITY_THRESHOLD
+    ? 98
+    : Math.max(4, Math.round((1 - (position - PRIORITY_THRESHOLD) / (MAX_DISPLAY - PRIORITY_THRESHOLD)) * 100));
+
   setTimeout(() => {
-    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-fill').style.width = Math.min(pct, 98) + '%';
+    const subEl     = document.getElementById('progress-sub');
     const spotsAway = Math.max(0, position - PRIORITY_THRESHOLD);
-    const subEl = document.getElementById('progress-sub');
     if (position <= PRIORITY_THRESHOLD) {
       subEl.textContent = '🎉 You\'re in Priority Access territory! 3 months of Pro secured.';
       subEl.style.color = 'var(--green-light)';
@@ -1325,41 +1367,40 @@ function renderConfirmation(position, refCode) {
     }
   }, 400);
 
-  // Scroll to confirmation
   document.getElementById('confirm-state').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-/* ── Check saved state on load ────────────────────────────── */
+/* ── FIX 7: init — no broken referrals×3 counter math ────── */
 function init() {
   const saved = loadState();
-  if (saved) {
+  if (saved && saved.position && saved.refCode) {
     renderConfirmation(saved.position, saved.refCode);
   }
 
-  // Fetch live count
+  // Fetch real count, then start polling
   fetchLiveCount();
   setInterval(fetchLiveCount, 30000);
 
-  // Animate counter on load
-  const countEl   = document.getElementById('live-count');
-  const proofEl   = document.getElementById('proof-count');
-  const targetCount = saved ? currentCount + (saved.referrals || 0) * 3 : BASE;
-  animateCounter(countEl, targetCount);
-  animateCounter(proofEl, targetCount);
+  // Animate to BASE on load; fetchLiveCount will correct upward if needed
+  animateCounter(document.getElementById('live-count'),  currentCount);
+  animateCounter(document.getElementById('proof-count'), currentCount);
 
-  // Start live tick & activity
   startLiveTick();
-  setTimeout(scheduleActivity, 5000);
 
-  // Scroll nav shadow
+  // First toast: randomise between 5–10 s so it doesn't fire instantly
+  setTimeout(scheduleActivity, 5000 + Math.random() * 5000);
+
+  // Scroll shadow on nav
   const nav = document.getElementById('main-nav');
   window.addEventListener('scroll', () => {
     nav.classList.toggle('scrolled', window.scrollY > 10);
   }, { passive: true });
 
-  // Intersection observer
+  // Intersection observer for fade-up elements
   const io = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
 }
@@ -1367,14 +1408,16 @@ function init() {
 /* ── Copy referral link ───────────────────────────────────── */
 function copyRef() {
   const urlEl = document.getElementById('ref-url-display');
-  const url   = urlEl?.dataset?.url || urlEl?.textContent;
+  const url   = urlEl?.dataset?.url || urlEl?.textContent || '';
   if (!url) return;
+
   navigator.clipboard.writeText(url).then(() => {
     const btn = document.getElementById('copy-btn');
     btn.textContent = '✓ Copied!';
     btn.classList.add('copied');
     setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2500);
   }).catch(() => {
+    // Fallback: select the text so user can copy manually
     const range = document.createRange();
     range.selectNode(urlEl);
     window.getSelection()?.removeAllRanges();
@@ -1405,12 +1448,12 @@ function toggleFaq(btn) {
 
 /* ── Scroll to form ───────────────────────────────────────── */
 function scrollToForm() {
-  const target = document.getElementById('form-state');
-  const confirm = document.getElementById('confirm-state');
-  if (target && target.style.display !== 'none') {
-    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  } else if (confirm && confirm.style.display !== 'none') {
-    confirm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const fs = document.getElementById('form-state');
+  const cs = document.getElementById('confirm-state');
+  if (fs && fs.style.display !== 'none') {
+    fs.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } else if (cs && cs.style.display !== 'none') {
+    cs.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 }
 
@@ -1419,7 +1462,7 @@ function fireConfetti() {
   const opts = { colors: ['#16a34a','#4ade80','#22c55e','#0d9488','#f0fdf4','#86efac'] };
   confetti({ ...opts, particleCount: 120, spread: 80, origin: { y: 0.55 } });
   setTimeout(() => {
-    confetti({ ...opts, particleCount: 60, angle: 60, spread: 55, origin: { x: 0, y: 0.6 } });
+    confetti({ ...opts, particleCount: 60, angle: 60,  spread: 55, origin: { x: 0, y: 0.6 } });
     confetti({ ...opts, particleCount: 60, angle: 120, spread: 55, origin: { x: 1, y: 0.6 } });
   }, 350);
 }
